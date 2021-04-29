@@ -1,0 +1,23 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v5.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v5.0": {
+      "lainlib/4.7.0.0": {
+        "runtime": {
+          "lainlib.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "lainlib/4.7.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}
