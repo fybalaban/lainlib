@@ -1,6 +1,6 @@
 <p align="center">
     <a href="https://github.com/fybalaban/lainlib">
-        <img src="https://drive.google.com/file/d/1WiDE2GJ1ark1NxPMj_r9IwWEBUfV4aDg/view?usp=sharing" width=auto height=auto>
+        <img src="https://drive.google.com/uc?id=1WiDE2GJ1ark1NxPMj_r9IwWEBUfV4aDg" width=auto height=auto>
     </a>
 </p>
 <p align="center">
@@ -16,7 +16,7 @@ Current assembly file version: | 2.6
 Target Framework: | .NET 5.0
 
 ## Notes
-I developed this class library mainly for solving problems that I encountered while working on several different coding projects. I tried to find and implement the most efficient algorithm.
+I developed this class library mainly for solving problems that I encountered while working on several different coding projects. I tried to find and implement the most efficient algorithm. I tried my best :)
 
 ## Contact me
 
