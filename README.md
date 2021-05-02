@@ -17,6 +17,7 @@ Target Framework: | .NET 5.0
 
 ## Notes
 I developed this class library mainly for solving problems that I encountered while working on several different coding projects. I tried to find and implement the most efficient algorithm. I tried my best :)
+Ported from LuddeToolset (.NET Framework 4.6) to .NET 5.0. Renamed the project to lainlib. Removed ErrorHandler class and all methods that depended on ErrorHandler.
 
 ## Contact me
 
