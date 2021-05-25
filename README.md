@@ -16,10 +16,10 @@ Current assembly file version: | 2.6
 Target Framework: | .NET 5.0
 
 ## Notes
-I developed this class library mainly for solving problems that I encountered while working on several different coding projects. I tried to find and implement the most efficient algorithm. I tried my best :)
+I developed this class library mainly for solving problems that I encountered while working on several different coding projects. I researched and tested for the most efficient algorithm.
 Ported from LuddeToolset (.NET Framework 4.6) to .NET 5.0. Renamed the project to lainlib. Removed ErrorHandler class and all methods that depended on ErrorHandler.
 
 ## Contact me
 
-* [**Twitter**](https://www.twitter.com/renklicigkofte/ "My Twitter profile")
+* [**Twitter**](https://www.twitter.com/feritdegil/ "My Twitter profile")
 * [**Email address**](mailto:ferityigitbalaban@gmail.com?subject=[GitHub]%20LuddeToolset "Email me!")
