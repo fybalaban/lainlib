@@ -1,4 +1,4 @@
 bin/
 obj/
-/logo.svg
+/nuget.config
 .vs/
