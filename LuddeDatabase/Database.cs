@@ -1,18 +1,19 @@
 /*
- *         LuddeToolset.Database
+ *         lainlib.Database
  * 
- *         LuddeToolset by fybalaban @ 2021
- *         https://www.github.com/fybalaban
+ *         lainlib by fybalaban @ 2021
+ *         https://www.github.com/fybalaban/lainlib
  */
 
-using LuddeToolset.Cryptography;
+using lainlib.Cryptography;
+
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace LuddeToolset.Database
+namespace lainlib.Database
 {
     /// <summary>
     /// Database for better storing and retreiving data. Does not automatically save data! 
@@ -59,10 +60,10 @@ namespace LuddeToolset.Database
 
         #region Fields
         private string[] ColumnNames = new string[MAXIMUM_COLUMN_COUNT];
-        private List<string> Rows = new List<string>(MAXIMUM_ROW_COUNT);
+        private List<string> Rows = new(MAXIMUM_ROW_COUNT);
         private string Directory;
-        private string PathKeystoreFile;
-        private string DirectoryKeyStoreFile;
+        private readonly string PathKeystoreFile;
+        private readonly string DirectoryKeyStoreFile;
         #endregion
 
         #region Object Initialization
@@ -96,7 +97,7 @@ namespace LuddeToolset.Database
                 throw new FileNotFoundException("Supplied string does not contain a valid path to .keystore file!", PathKeystoreFile);
             }
 
-            if (!this.ReadKeystore(PathKeystoreFile, out Cryptography.KeyStore keyStore))
+            if (!ReadKeystore(PathKeystoreFile, out Cryptography.KeyStore keyStore))
             {
                 Status = DatabaseStatus.Disposed;
                 return;
@@ -123,7 +124,7 @@ namespace LuddeToolset.Database
 
             if (IO.ReadBytesFromFile(pathOfDatabaseFile, out byte[] oldFile))
             {
-                AESNative native = new AESNative(store);
+                AESNative native = new(store);
                 byte[] cipherBytes = native.EncryptStringToBytes(Encoding.UTF8.GetString(oldFile));
                 IO.WriteBytesToFile(cipherBytes, pathOfDatabaseFile);
             }
@@ -179,10 +180,10 @@ namespace LuddeToolset.Database
                 throw new ArgumentException("Database object: name parameter is not valid.");
             }
 
-            this.InitializeDatabase();
+            InitializeDatabase();
             NeedsSaving = true;
 
-            this.CreateTemporary();
+            CreateTemporary();
         }
         #endregion
 
@@ -198,8 +199,8 @@ namespace LuddeToolset.Database
             }
 
             DecryptedFilePath = Directory + Text.GetTempString(@".db");
-            File.WriteAllText(DecryptedFilePath, this.Decrypt(Path, KeyStore)); // Decrypts database image and writes decrypted file to disk.
-            this.ReadTemporary(); // This line populates the Database object.
+            File.WriteAllText(DecryptedFilePath, Decrypt(Path, KeyStore)); // Decrypts database image and writes decrypted file to disk.
+            ReadTemporary(); // This line populates the Database object.
             Status = DatabaseStatus.Connected;
         }
 
@@ -214,8 +215,8 @@ namespace LuddeToolset.Database
             }
 
             Status = DatabaseStatus.Closing;
-            this.Update();
-            this.Dispose();
+            Update();
+            Dispose();
             return;
         }
 
@@ -224,7 +225,7 @@ namespace LuddeToolset.Database
         /// </summary>
         public void Update()
         {
-            using (Cryptography.AESNative aes = new Cryptography.AESNative(KeyStore))
+            using (Cryptography.AESNative aes = new(KeyStore))
             {
                 aes.Encrypt(DecryptedFilePath, Path);
             }
@@ -250,29 +251,19 @@ namespace LuddeToolset.Database
         private void CreateTemporary()
         {
             DecryptedFilePath = Directory + Text.GetTempString(@".db");
-            this.WriteTemporary();
+            WriteTemporary();
         }
 
         private void WriteTemporary()
         {
-            StringBuilder builder = new StringBuilder();
+            StringBuilder builder = new();
             for (int i = 0; i < ColumnNames.Length; i++)
             {
                 builder.Append(string.Format("{0}{1}", ColumnNames[i], ROW_SUBITEMS_DELIMITER));
             }
             string columnNamesLine = builder.ToString().RemoveLastCharacter();
 
-            List<string> lines = new List<string>()
-            {
-                "##LuddeToolset // Database File",
-                string.Format("##Creation time: {0}", Text.GetDateTimeNow()),
-                string.Format("##Name: {0}", Name),
-                string.Format("##GUID: {0}", ID),
-                "##Do not change this file!",
-                "",
-                string.Format("#column-name-definition: {0}", columnNamesLine),
-                ""
-            };
+            List<string> lines = new();
 
             for (int i = 0; i < Rows.Count; i++) // adds the rows line by line to list object.
             {
@@ -285,7 +276,7 @@ namespace LuddeToolset.Database
 
         private string Decrypt(string path, Cryptography.KeyStore keystore)
         {
-            using (Cryptography.AESNative aes = new Cryptography.AESNative(keystore))
+            using (Cryptography.AESNative aes = new(keystore))
             {
                 aes.DecryptFile(out string cont, path);
                 return cont;
@@ -294,7 +285,7 @@ namespace LuddeToolset.Database
 
         private void Encrypt(string cont, string loc, Cryptography.KeyStore keystore)
         {
-            using (Cryptography.AESNative aes = new Cryptography.AESNative(keystore))
+            using (AESNative aes = new(keystore))
             {
                 aes.EncryptFile(cont, loc);
             }
@@ -311,32 +302,28 @@ namespace LuddeToolset.Database
             if (Status != DatabaseStatus.Connected)
             {
                 throw new DatabaseNotConnectedException();
-                return;
             }
-            
+
             // Check if supplied subitems do not match up with columns.
-            if (subitems.Length != ColumnNames.Count())
+            if (subitems.Length != ColumnNames.Length)
             {
                 throw new ArgumentException("Database object: Supplied subitems array's element count is not equal to ColumnNames' count.");
-                return;
             }
             // Check if database is full.
-            if (Rows.Count() >= MAXIMUM_ROW_COUNT)
+            if (Rows.Count >= MAXIMUM_ROW_COUNT)
             {
                 throw new ReachedMaximumRowCountException();
-                return;
             }
             // Check the lengths of subitems.
             for (int j = 0; j < subitems.Length; j++)
             {
                 if (subitems[j].Length > MAXIMUM_SUBITEM_LENGTH)
                 {
-                    throw new ArgumentOutOfRangeException("Supplied subitem string length exceeds maximum lenght constant.");
-                    return;
+                    throw new ArgumentOutOfRangeException(nameof(subitems), "Supplied subitem string length exceeds maximum lenght constant.");
                 }
             }
 
-            StringBuilder builder = new StringBuilder();
+            StringBuilder builder = new();
             int i = 0;
             while (i < subitems.Length)
             {
@@ -346,7 +333,7 @@ namespace LuddeToolset.Database
             string fullRow = builder.ToString();
             fullRow = fullRow.Remove(fullRow.Length - 1);
             Rows.Add(fullRow);
-            this.WriteTemporary();
+            WriteTemporary();
         }
 
         /// <summary>
@@ -367,12 +354,11 @@ namespace LuddeToolset.Database
                 {
                     if (subitems[j].Length > MAXIMUM_SUBITEM_LENGTH)
                     {
-                        throw new ArgumentOutOfRangeException("Supplied subitem string length exceeds maximum lenght constant.");
-                        return;
+                        throw new ArgumentOutOfRangeException(nameof(subitems), "Supplied subitem string length exceeds maximum lenght constant.");
                     }
                 }
 
-                StringBuilder builder = new StringBuilder("");
+                StringBuilder builder = new("");
                 int i = 0;
                 while (i < subitems.Length)
                 {
@@ -381,7 +367,7 @@ namespace LuddeToolset.Database
                 }
                 string newFullRow = Text.RemoveLastCharacter(builder.ToString());
                 Rows[index] = newFullRow;
-                this.WriteTemporary();
+                WriteTemporary();
             }
         }
 
@@ -394,13 +380,12 @@ namespace LuddeToolset.Database
             if (Status != DatabaseStatus.Connected)
             {
                 throw new DatabaseNotConnectedException();
-                return;
             }
 
             if (index >= 0 && index < Rows.Count)
             {
                 Rows.RemoveAt(index);
-                this.WriteTemporary();
+                WriteTemporary();
             }
         }
         #endregion
@@ -434,24 +419,23 @@ namespace LuddeToolset.Database
             if (Status != DatabaseStatus.Connected)
             {
                 throw new DatabaseNotConnectedException();
-                return;
             }
             if (name.Valid())
             {
                 Name = name;
-                this.WriteTemporary();
+                WriteTemporary();
             }
         }
 
         private void InitializeDatabase()
         {
-            StringBuilder stringBuilder = new StringBuilder();
+            StringBuilder stringBuilder = new();
             for (int i = 0; i < ColumnCount; i++)
             {
                 stringBuilder.AppendFormat("null{0}", ROW_SUBITEMS_DELIMITER);
             }
             Rows.Add(stringBuilder.ToString().RemoveLastCharacter());
-            this.WriteTemporary();
+            WriteTemporary();
         }
 
         /// <summary>
@@ -461,7 +445,7 @@ namespace LuddeToolset.Database
         {
             if (Status is DatabaseStatus.Connected)
             {
-                StringBuilder builder = new StringBuilder(); // this block creates and prints column names to console.
+                StringBuilder builder = new(); // this block creates and prints column names to console.
                 string[] sArr = ColumnNames;
                 for (int i = 0; i < sArr.Length; i++)
                 {
@@ -491,13 +475,12 @@ namespace LuddeToolset.Database
             if (Status != DatabaseStatus.Connected)
             {
                 throw new DatabaseNotConnectedException();
-                return null;
             }
 
             string dump = string.Empty;
-            StringBuilder builder = new StringBuilder();
+            StringBuilder builder = new();
             builder.AppendLine("_____________________________________________");
-            builder.AppendFormat("LuddeToolset.Database // written by fybalaban @ 2020 // version {0}\nCreation time of this dump: {1}\nName of database: {2}\n" +
+            builder.AppendFormat("lainlib.Database // written by fybalaban @ 2021 // version {0}\nCreation time of this dump: {1}\nName of database: {2}\n" +
                 "GUID of database: {3}\nRow count: {4}\nColumn count: {5}\n", VERSION, Text.GetDateTimeNow(),
                 Name, ID, RowCount, ColumnCount);
             builder.AppendLine("_____________________________________________");
@@ -537,7 +520,6 @@ namespace LuddeToolset.Database
             if (Status != DatabaseStatus.Connected)
             {
                 throw new DatabaseNotConnectedException();
-                return new int[2] { row, column };
             }
 
             if (lookUp.Valid())
@@ -566,13 +548,9 @@ namespace LuddeToolset.Database
         /// <returns>Returns empty string if arguments are not valid</returns>
         public string GetSubitemAtCoordinates(int rowIndex, int columnIndex)
         {
-            if (Status != DatabaseStatus.Connected)
-            {
-                throw new DatabaseNotConnectedException();
-                return null;
-            }
-
-            return rowIndex >= 0 && rowIndex < Rows.Count && columnIndex >= 0 && columnIndex < ColumnNames.Count()
+            return Status != DatabaseStatus.Connected
+                ? throw new DatabaseNotConnectedException()
+                : rowIndex >= 0 && rowIndex < Rows.Count && columnIndex >= 0 && columnIndex < ColumnNames.Count()
                 ? Rows[rowIndex].Split(ROW_SUBITEMS_DELIMITER)[columnIndex]
                 : string.Empty;
         }
@@ -585,12 +563,9 @@ namespace LuddeToolset.Database
         /// <returns>Returns empty string if arguments are not valid</returns>
         public string GetSubitemAtCoordinates(int rowIndex, string columnName)
         {
-            if (Status != DatabaseStatus.Connected)
-            {
-                throw new DatabaseNotConnectedException();
-            }
-
-            return rowIndex >= 0 && rowIndex < RowCount && ColumnNames.Contains(columnName)
+            return Status != DatabaseStatus.Connected
+                ? throw new DatabaseNotConnectedException()
+                : rowIndex >= 0 && rowIndex < RowCount && ColumnNames.Contains(columnName)
                 ? Rows[rowIndex].Split(ROW_SUBITEMS_DELIMITER)[Collections.GetIndexOfElement(ColumnNames, columnName)]
                 : string.Empty;
         }
@@ -606,10 +581,10 @@ namespace LuddeToolset.Database
             {
                 throw new DatabaseNotConnectedException();
             }
-            if (columnIndex >= 0 && columnIndex < ColumnNames.Count())
+            if (columnIndex >= 0 && columnIndex < ColumnNames.Length)
             {
-                List<string> list = new List<string>();
-                for (int i = 0; i < Rows.Count(); i++)
+                List<string> list = new();
+                for (int i = 0; i < Rows.Count; i++)
                 {
                     list.Add(Rows[i].Split(ROW_SUBITEMS_DELIMITER)[columnIndex]);
                 }
@@ -632,7 +607,7 @@ namespace LuddeToolset.Database
             if (ColumnNames.Contains(columnName) == true)
             {
                 int indexOfColumnName = 0;
-                for (int i = 0; i < ColumnNames.Count(); i++)
+                for (int i = 0; i < ColumnNames.Length; i++)
                 {
                     if (columnName == ColumnNames[i])
                     {
@@ -640,7 +615,7 @@ namespace LuddeToolset.Database
                     }
                 }
 
-                return this.ReturnAllSubitemsInColumn(indexOfColumnName);
+                return ReturnAllSubitemsInColumn(indexOfColumnName);
             }
             return null;
         }
@@ -652,11 +627,9 @@ namespace LuddeToolset.Database
         /// <returns>If index is not valid returns null</returns>
         public string[] ReturnSubitemsInRow(int rowIndex)
         {
-            if (Status != DatabaseStatus.Connected)
-            {
-                throw new DatabaseNotConnectedException();
-            }
-            return rowIndex >= 0 && rowIndex < Rows.Count ? Rows[rowIndex].Split(ROW_SUBITEMS_DELIMITER) : null;
+            return Status != DatabaseStatus.Connected
+                ? throw new DatabaseNotConnectedException()
+                : rowIndex >= 0 && rowIndex < Rows.Count ? Rows[rowIndex].Split(ROW_SUBITEMS_DELIMITER) : null;
         }
         #endregion
 

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace LuddeToolset
+namespace lainlib
 {
     /// <summary>
     /// 
@@ -17,9 +17,9 @@ namespace LuddeToolset
         /// <returns>Returns -1 if something is wrong.</returns>
         public static int GetIndexOfElement<T>(T[] arr, T element)
         {
-            if (arr.Count() > 0 && element != null)
+            if (arr.Length > 0 && element != null)
             {
-                for (int i = 0; i < arr.Count(); i++)
+                for (int i = 0; i < arr.Length; i++)
                 {
                     if (element.Equals(arr[i]))
                     {
@@ -57,7 +57,7 @@ namespace LuddeToolset
         /// <returns></returns>
         public static bool Contains<T>(this IEnumerable<T> enumerable, T thisObject)
         {
-            if (enumerable != null && enumerable.Count() > 0)
+            if (enumerable != null && enumerable.Any())
             {
                 for (int i = 0; i < enumerable.Count(); i++)
                 {
@@ -102,7 +102,7 @@ namespace LuddeToolset
         public static bool Contains<T>(this IEnumerable<T> enumerable, T thisObject, out int indexOfObject)
         {
             indexOfObject = -1;
-            if (enumerable != null && enumerable.Count() > 0)
+            if (enumerable != null && enumerable.Any())
             {
                 for (int i = 0; i < enumerable.Count(); i++)
                 {
@@ -176,7 +176,7 @@ namespace LuddeToolset
         public static bool AnyElementContains(this IEnumerable<string> enumerable, string value, out int indexOfContainingElement)
         {
             indexOfContainingElement = -1;
-            if (enumerable != null && enumerable.Count() > 0)
+            if (enumerable != null && enumerable.Any())
             {
                 for (int i = 0; i < enumerable.Count(); i++)
                 {
@@ -239,7 +239,7 @@ namespace LuddeToolset
         /// <returns></returns>
         public static bool IsFilledWith<T>(this IEnumerable<T> collection, T value)
         {
-            if (collection != null && collection.Count() > 0)
+            if (collection != null && collection.Any())
             {
                 for (int i = 0; i < collection.Count(); i++)
                 {

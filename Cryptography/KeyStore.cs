@@ -1,11 +1,11 @@
 ﻿/*
- *         LuddeToolset.Cryptography
+ *         lainlib.Cryptography
  * 
- *         LuddeToolset by fybalaban @ 2020
- *         https://www.github.com/fybalaban
+ *         lainlib by fybalaban @ 2021
+ *         https://www.github.com/fybalaban/lainlib
  */
 
-namespace LuddeToolset.Cryptography
+namespace lainlib.Cryptography
 {
         /// <summary>
         /// Used to store a symmetric cryptography algorithm key and a initialization vector.

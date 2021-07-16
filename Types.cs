@@ -1,11 +1,11 @@
 ﻿/*
- *         LuddeToolset.TypeRecognition
+ *         lainlib.TypeRecognition
  * 
- *         LuddeToolset by fybalaban @ 2020
- *         https://www.github.com/fybalaban
+ *         lainlib by fybalaban @ 2021
+ *         https://www.github.com/fybalaban/lainlib
  */
 
-namespace LuddeToolset
+namespace lainlib
 {
     /// <summary>
     /// Generalized type recognition for variables contained in string. Uses Regular Expressions and several methods to find types.

@@ -1,24 +1,24 @@
 ﻿/*
- *         LuddeToolset.TypeRecognition
+ *         lainlib.TypeRecognition
  * 
- *         LuddeToolset by fybalaban @ 2020
- *         https://www.github.com/fybalaban
+ *         lainlib by fybalaban @ 2021
+ *         https://www.github.com/fybalaban/lainlib
  */
 
 using System.Text.RegularExpressions;
 
-namespace LuddeToolset
+namespace lainlib
 {
     /// <summary>
     /// Generalized type recognition for variables contained in string. Uses Regular Expressions and several methods to find types.
     /// </summary>
     public static partial class TypeRecognition
     {
-        private readonly static Regex Integers = new Regex("/^([+-]?[1-9]\\d*|0)$", RegexOptions.Compiled);
-        private readonly static Regex Doubles = new Regex("[+-]?([0-9]*[.])?[0-9]+", RegexOptions.Compiled);
-        private readonly static Regex Strings = new Regex("[a-zA-Z]", RegexOptions.Compiled);
-        private readonly static Regex SChartr = new Regex(@"[ ! ^ # £ $ + \- _ \| < > : ; , ~ ¨ ` ´ ' % & / ( ) = ? * \\ } \] \[ { ]", RegexOptions.Compiled);
-        private readonly static Regex SCharEx = new Regex("[ \" ]", RegexOptions.Compiled);
+        private static readonly Regex Integers = new("/^([+-]?[1-9]\\d*|0)$", RegexOptions.Compiled);
+        private static readonly Regex Doubles = new("[+-]?([0-9]*[.])?[0-9]+", RegexOptions.Compiled);
+        private static readonly Regex Strings = new("[a-zA-Z]", RegexOptions.Compiled);
+        private static readonly Regex SChartr = new(@"[ ! ^ # £ $ + \- _ \| < > : ; , ~ ¨ ` ´ ' % & / ( ) = ? * \\ } \] \[ { ]", RegexOptions.Compiled);
+        private static readonly Regex SCharEx = new("[ \" ]", RegexOptions.Compiled);
 
         /// <summary>
         /// Returns true if given string contains a boolean expression. ("true" or "false")
@@ -45,7 +45,7 @@ namespace LuddeToolset
         /// Returns the 'Type' of given value.
         /// </summary>
         /// <param name="value">The value to find type of</param>
-        /// <returns>Any enum from LuddeToolset.TypeRecognition.Types</returns>
+        /// <returns>Any enum from lainlib.TypeRecognition.Types</returns>
         public static Types FindType(this string value)
         {
             if (value.Valid())

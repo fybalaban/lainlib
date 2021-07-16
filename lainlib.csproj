@@ -8,17 +8,19 @@
     <AssemblyName>lainlib</AssemblyName>
     <TargetFramework>net5.0</TargetFramework>
     <Version>4.7.0.0</Version>
-    <Authors>ferityigitbalaban</Authors>
-    <Company>ferityigitbalaban</Company>
+    <Authors>fybalaban</Authors>
+    <Company>fybalaban</Company>
     <Product>lainlib</Product>
     <PackageId>lainlib</PackageId>
     <AssemblyVersion>2.6.0.0</AssemblyVersion>
     <FileVersion>2.6.0.0</FileVersion>
     <NeutralLanguage>en</NeutralLanguage>
     <Description>A shared toolset of methods and classes for string manipulation, AES cryptography operations, type recognition, file I/O for C#.</Description>
-    <Copyright>Copyright ferityigitbalaban 2021</Copyright>
+    <Copyright>Copyright fybalaban 2021</Copyright>
     <RepositoryUrl>https://github.com/fybalaban/lainlib</RepositoryUrl>
     <PackageReleaseNotes>Release</PackageReleaseNotes>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageLicenseExpression>fybalaban</PackageLicenseExpression>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>

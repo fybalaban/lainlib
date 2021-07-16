@@ -1,18 +1,18 @@
 ﻿/*
- *         LuddeToolset.ConsoleMethods
+ *         lainlib.ConsoleMethods
  * 
- *         LuddeToolset by ferityigitbalaban @ 2020
- *         https://www.github.com/fybalaban
+ *         lainlib by fybalaban @ 2021
+ *         https://www.github.com/fybalaban/lainlib
  */
 
 #pragma warning disable IDE1006 // This line disables the Naming Rule Violation warning. (Visual Studio 2017)
 using System;
 using System.Drawing;
 
-namespace LuddeToolset
+namespace lainlib
 {
     /// <summary>
-    /// C++ like methods for faster typing and cooler looking codes. Include with 'using static LuddeToolset.ConsoleMethods'.
+    /// C++ like methods for faster typing and cooler looking codes. Include with 'using static lainlib.ConsoleMethods'.
     /// </summary>
     public static class ConsoleMethods
     {

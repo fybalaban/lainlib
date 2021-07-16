@@ -1,15 +1,15 @@
 ﻿/*
- *         LuddeToolset.Cryptography
+ *         lainlib.Cryptography
  * 
- *         LuddeToolset by fybalaban @ 2020
- *         https://www.github.com/fybalaban
+ *         lainlib by fybalaban @ 2021
+ *         https://www.github.com/fybalaban/lainlib
  */
 
 using System;
 using System.IO;
 using System.Security.Cryptography;
 
-namespace LuddeToolset.Cryptography
+namespace lainlib.Cryptography
 {
     /// <summary>
     /// Provides methods for full file and string encryption/decryption with AES algorithm. Encapsulates System.Security.Cryptography.AesManaged. Managed code is faster and safer with small loads.
@@ -40,7 +40,7 @@ namespace LuddeToolset.Cryptography
         #endregion
 
         #region Fields
-        private AesManaged InnerAes;
+        private readonly AesManaged InnerAes;
         #endregion
 
         #region Object Creation
@@ -139,13 +139,9 @@ namespace LuddeToolset.Cryptography
             {
                 throw new ArgumentException("Argument: 'keySize' is not a valid size for AES algorithm.");
             }
-            if (keystore.Key == null || keystore.Key.Length == 0)
+            if (keystore.Key == null || keystore.Key.Length == 0 || keystore.IV == null || keystore.IV.Length == 0)
             {
-                throw new ArgumentNullException(nameof(keystore.Key));
-            }
-            if (keystore.IV == null || keystore.IV.Length == 0)
-            {
-                throw new ArgumentNullException(nameof(keystore.IV));
+                throw new ArgumentNullException(nameof(keystore));
             }
             PaddingMode = PaddingMode.PKCS7;
             CipherMode = CipherMode.CBC;
@@ -282,17 +278,17 @@ namespace LuddeToolset.Cryptography
         {
             if (!plainText.Valid()) // Do validity check
             {
-                throw new ArgumentNullException("plainText");
+                throw new ArgumentNullException(nameof(plainText));
             }
 
             byte[] encrypted;
             ICryptoTransform encryptor = InnerAes.CreateEncryptor(InnerAes.Key, InnerAes.IV); // Create an encryptor to perform the stream transform.
 
-            using (MemoryStream msEncrypt = new MemoryStream()) // Create the streams used for encryption.
+            using (MemoryStream msEncrypt = new()) // Create the streams used for encryption.
             {
-                using (CryptoStream csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write))
+                using (CryptoStream csEncrypt = new(msEncrypt, encryptor, CryptoStreamMode.Write))
                 {
-                    using (StreamWriter swEncrypt = new StreamWriter(csEncrypt))
+                    using (StreamWriter swEncrypt = new(csEncrypt))
                     {
                         swEncrypt.Write(plainText); // Write all data to the stream.
                     }
@@ -311,15 +307,15 @@ namespace LuddeToolset.Cryptography
         {
             if (cipherText == null || cipherText.Length <= 0) // Do null check.
             {
-                throw new ArgumentNullException("cipherText");
+                throw new ArgumentNullException(nameof(cipherText));
             }
             string plaintext = string.Empty; // Declare the string used to hold the decrypted text.
             ICryptoTransform decryptor = InnerAes.CreateDecryptor(InnerAes.Key, InnerAes.IV); // Create a decryptor to perform the stream transform.
-            using (MemoryStream msDecrypt = new MemoryStream(cipherText)) // Create the streams used for decryption.
+            using (MemoryStream msDecrypt = new(cipherText)) // Create the streams used for decryption.
             {
-                using (CryptoStream csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read))
+                using (CryptoStream csDecrypt = new(msDecrypt, decryptor, CryptoStreamMode.Read))
                 {
-                    using (StreamReader srDecrypt = new StreamReader(csDecrypt))
+                    using (StreamReader srDecrypt = new(csDecrypt))
                     {
                         plaintext = srDecrypt.ReadToEnd(); // Read the decrypted bytes from the decrypting stream and place them in a string.
                     }
@@ -339,11 +335,11 @@ namespace LuddeToolset.Cryptography
             // Check the arguments.
             if (!fileContents.Valid())
             {
-                throw new ArgumentNullException("fileContents");
+                throw new ArgumentNullException(nameof(fileContents));
             }
             if (!filePath.Valid())
             {
-                throw new ArgumentNullException("filePath");
+                throw new ArgumentNullException(nameof(filePath));
             }
             byte[] file = this.EncryptStringToBytes(fileContents);
             IO.WriteBytesToFile(file, filePath);
@@ -359,7 +355,7 @@ namespace LuddeToolset.Cryptography
             // Check the arguments.
             if (!filePath.Valid())
             {
-                throw new ArgumentNullException("filePath");
+                throw new ArgumentNullException(nameof(filePath));
             }
 
             decryptedFileContents = null;
@@ -380,7 +376,7 @@ namespace LuddeToolset.Cryptography
             // Check the arguments.
             if (!fileToEncrypt.Valid())
             {
-                throw new ArgumentNullException("fileToEncrypt");
+                throw new ArgumentNullException(nameof(fileToEncrypt));
             }
             if (!File.Exists(fileToEncrypt))
             {
@@ -388,7 +384,7 @@ namespace LuddeToolset.Cryptography
             }
             if (!outputFile.Valid())
             {
-                throw new ArgumentNullException("outputFile");
+                throw new ArgumentNullException(nameof(outputFile));
             }
             try
             {

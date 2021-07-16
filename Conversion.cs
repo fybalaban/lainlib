@@ -1,13 +1,13 @@
 ﻿/*
- *         LuddeToolset.Conversion
+ *         lainlib.Conversion
  * 
- *         LuddeToolset by ferityigitbalaban @ 2020
- *         https://www.github.com/fybalaban
+ *         lainlib by fybalaban @ 2021
+ *         https://www.github.com/fybalaban/lainlib
  */
 
 using System;
 
-namespace LuddeToolset
+namespace lainlib
 {
     /// <summary>
     /// Convert objects in a safe, fast and reliable way. Currently supports object to integer, boolean, double, float operations.
@@ -21,8 +21,7 @@ namespace LuddeToolset
         /// <returns></returns>
         public static int ToInteger(this object value)
         {
-            int result = -1;
-            int.TryParse(value.ToString(), out result);
+            int.TryParse(value.ToString(), out int result);
             return result;
         }
 

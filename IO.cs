@@ -1,8 +1,8 @@
 ﻿/*
- *         LuddeToolset.IO
+ *         lainlib.IO
  * 
- *         LuddeToolset by ferityigitbalaban @ 2020
- *         https://www.github.com/fybalaban
+ *         lainlib by fybalaban @ 2021
+ *         https://www.github.com/fybalaban/lainlib
  */
 
 using System;
@@ -11,7 +11,7 @@ using System.Linq;
 using System.Text;
 using System.IO;
 
-namespace LuddeToolset
+namespace lainlib
 {
     /// <summary>
     /// Methods for IO and File System operations.
@@ -39,11 +39,7 @@ namespace LuddeToolset
             }
             catch (Exception exception)
             {
-                if (haltWhenErrorOccurs)
-                {
-                    throw exception;
-                }
-                return false;
+                return haltWhenErrorOccurs ? throw exception : false;
             }
             return true;
         }
@@ -76,11 +72,7 @@ namespace LuddeToolset
             }
             catch (Exception exception)
             {
-                if (haltWhenErrorOccurs)
-                {
-                    throw exception;
-                }
-                return false;
+                return haltWhenErrorOccurs ? throw exception : false;
             }
             return true;
         }
@@ -92,11 +84,9 @@ namespace LuddeToolset
         /// <returns></returns>
         public static string ReturnDirectoryFromFullPath(string path)
         {
-            if (!File.Exists(path))
-            {
-                throw new FileNotFoundException("Argument 'path' is not a valid file path.", nameof(path));
-            }
-            return new FileInfo(path).Directory.FullName + @"\";
+            return !File.Exists(path)
+                ? throw new FileNotFoundException("Argument 'path' is not a valid file path.", nameof(path))
+                : new FileInfo(path).Directory.FullName + @"\";
         }
 
         /// <summary>
@@ -106,11 +96,9 @@ namespace LuddeToolset
         /// <returns></returns>
         public static string ReturnNameFromFullPath(string path)
         {
-            if (!File.Exists(path))
-            {
-                throw new FileNotFoundException("Argument 'path' is not a valid file path.", nameof(path));
-            }
-            return new FileInfo(path).Name;
+            return !File.Exists(path)
+                ? throw new FileNotFoundException("Argument 'path' is not a valid file path.", nameof(path))
+                : new FileInfo(path).Name;
         }
 
         /// <summary>
@@ -130,7 +118,7 @@ namespace LuddeToolset
                 applicationMessageLine, DateTime.Now, exception.Message, exception.InnerException, exception.TargetSite, exception.StackTrace);
             try
             {
-                StreamWriter writer = new StreamWriter(errorLogPath);
+                StreamWriter writer = new(errorLogPath);
                 writer.Write(errorLogText);
                 writer.Close();
             }
@@ -148,7 +136,7 @@ namespace LuddeToolset
         {
             if (list.Count() != 0)
             {
-                StringBuilder builder = new StringBuilder();
+                StringBuilder builder = new();
                 for (int i = 0; i < list.Count(); i++)
                 {
                     builder.AppendFormat("{0}{1}", list.ElementAt(i), Environment.NewLine);

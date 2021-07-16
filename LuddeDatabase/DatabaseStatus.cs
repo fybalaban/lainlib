@@ -1,4 +1,4 @@
-﻿namespace LuddeToolset.Database
+﻿namespace lainlib.Database
 {
     public partial class Database
     {

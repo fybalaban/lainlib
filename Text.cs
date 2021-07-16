@@ -1,8 +1,8 @@
 ﻿/*
- *         LuddeToolset.String
+ *         lainlib.String
  * 
- *         LuddeToolset by ferityigitbalaban @ 2020
- *         https://www.github.com/fybalaban
+ *         lainlib by fybalaban @ 2021
+ *         https://www.github.com/fybalaban/lainlib
  */
 
 using System;
@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace LuddeToolset
+namespace lainlib
 {
     public static class Text
     {
@@ -21,7 +21,7 @@ namespace LuddeToolset
         /// <returns></returns>
         public static bool Valid(this string value)
         {
-            return !string.IsNullOrEmpty(value) ? !string.IsNullOrWhiteSpace(value) : false;
+            return !string.IsNullOrEmpty(value) && !string.IsNullOrWhiteSpace(value);
         }
 
         /// <summary>
@@ -112,7 +112,7 @@ namespace LuddeToolset
         {
             if (@string.Valid() && amount >= 0 && amount < @string.Length)
             {
-                StringBuilder stringBuilder = new StringBuilder(string.Empty);
+                StringBuilder stringBuilder = new(string.Empty);
                 for (int i = 0; i < amount; i++)
                 {
                     stringBuilder.Append(@string[i]);
@@ -199,7 +199,7 @@ namespace LuddeToolset
         /// <returns></returns>
         public static string AppendAll(this string[] arr)
         {
-            StringBuilder stringBuilder = new StringBuilder();
+            StringBuilder stringBuilder = new();
             for (int i = 0; i < arr.Length; i++)
             {
                 stringBuilder.Append(arr[i]);
@@ -214,7 +214,7 @@ namespace LuddeToolset
         /// <returns></returns>
         public static string AppendAll(this char[] arr)
         {
-            StringBuilder stringBuilder = new StringBuilder();
+            StringBuilder stringBuilder = new();
             for (int i = 0; i < arr.Length; i++)
             {
                 stringBuilder.Append(arr[i]);
@@ -230,7 +230,7 @@ namespace LuddeToolset
         /// <returns></returns>
         public static string AppendAll(this string[] arr, string delimiter)
         {
-            StringBuilder stringBuilder = new StringBuilder();
+            StringBuilder stringBuilder = new();
             for (int i = 0; i < arr.Length; i++)
             {
                 stringBuilder.Append(arr[i] + delimiter);
@@ -246,7 +246,7 @@ namespace LuddeToolset
         /// <returns></returns>
         public static string AppendAll(this char[] arr, char delimiter)
         {
-            StringBuilder stringBuilder = new StringBuilder();
+            StringBuilder stringBuilder = new();
             for (int i = 0; i < arr.Length; i++)
             {
                 stringBuilder.Append(arr[i] + delimiter);

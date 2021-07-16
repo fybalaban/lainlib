@@ -1,8 +1,8 @@
 ﻿/*
- *         LuddeToolset.Cryptography
+ *         lainlib.Cryptography
  * 
- *         LuddeToolset by fybalaban @ 2020
- *         https://www.github.com/fybalaban
+ *         lainlib by fybalaban @ 2021
+ *         https://www.github.com/fybalaban/lainlib
  */
 
 using System;
@@ -12,15 +12,15 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace LuddeToolset.Cryptography
+namespace lainlib.Cryptography
 {
     public static class Hash
     {
-        private readonly static SHA512CryptoServiceProvider SHA512Provider = new SHA512CryptoServiceProvider();
-        private readonly static SHA384CryptoServiceProvider SHA384Provider = new SHA384CryptoServiceProvider();
-        private readonly static SHA256CryptoServiceProvider SHA256Provider = new SHA256CryptoServiceProvider();
-        private readonly static SHA1CryptoServiceProvider SHA1Provider = new SHA1CryptoServiceProvider();
-        private readonly static MD5CryptoServiceProvider MD5Provider = new MD5CryptoServiceProvider();
+        private readonly static SHA512CryptoServiceProvider SHA512Provider = new();
+        private readonly static SHA384CryptoServiceProvider SHA384Provider = new();
+        private readonly static SHA256CryptoServiceProvider SHA256Provider = new();
+        private readonly static SHA1CryptoServiceProvider SHA1Provider = new();
+        private readonly static MD5CryptoServiceProvider MD5Provider = new();
 
         #region SHAxxx Hash Functions
         /// <summary>
@@ -132,7 +132,7 @@ namespace LuddeToolset.Cryptography
         /// <summary>
         /// Initialized Random class.
         /// </summary>
-        public static System.Random RandomGenerator = new System.Random();
+        public static System.Random RandomGenerator = new();
 
         /// <summary>
         /// Returns random number.
@@ -177,7 +177,7 @@ namespace LuddeToolset.Cryptography
         /// <returns></returns>
         public static byte[] GetKey(int size)
         {
-            AesManaged aes = new AesManaged();
+            AesManaged aes = new();
             if (aes.ValidKeySize(size))
             {
                 aes.KeySize = size;
@@ -193,7 +193,7 @@ namespace LuddeToolset.Cryptography
         /// <returns></returns>
         public static byte[] GetIV()
         {
-            AesManaged aes = new AesManaged();
+            AesManaged aes = new();
             aes.GenerateIV();
             return aes.IV;
         }
@@ -210,21 +210,21 @@ namespace LuddeToolset.Cryptography
         {
             try
             {
-                StringBuilder keyBuilder = new StringBuilder();
+                StringBuilder keyBuilder = new();
                 for (int j = 0; j < key.Length; j++)
                 {
                     keyBuilder.Append(key[j].ToString() + " ");
                 }
                 string keyString = keyBuilder.ToString();
 
-                StringBuilder ivBuilder = new StringBuilder();
+                StringBuilder ivBuilder = new();
                 for (int j = 0; j < iv.Length; j++)
                 {
                     ivBuilder.Append(iv[j].ToString() + " ");
                 }
                 string keyIV = ivBuilder.ToString();
 
-                List<string> lines = new List<string>()
+                List<string> lines = new()
                 {
                     keyString,
                     keySize.ToString(),
@@ -237,7 +237,7 @@ namespace LuddeToolset.Cryptography
             }
             catch (Exception e)
             {
-                IO.CreateAndWriteErrorMessage(IO.ReturnDirectoryFromFullPath(path), e, "LuddeToolset.Cryptography");
+                IO.CreateAndWriteErrorMessage(IO.ReturnDirectoryFromFullPath(path), e, "lainlib.Cryptography");
                 return null;
             }
         }
@@ -288,7 +288,7 @@ namespace LuddeToolset.Cryptography
             }
             catch (Exception e)
             {
-                IO.CreateAndWriteErrorMessage(IO.ReturnDirectoryFromFullPath(filePath), e, "LuddeToolset.Cryptography");
+                IO.CreateAndWriteErrorMessage(IO.ReturnDirectoryFromFullPath(filePath), e, "lainlib.Cryptography");
                 return null;
             }
         }
@@ -300,7 +300,7 @@ namespace LuddeToolset.Cryptography
         /// <returns></returns>
         public static bool IsValidKeySize(int size)
         {
-            AesManaged aes = new AesManaged();
+            AesManaged aes = new();
             return aes.ValidKeySize(size);
         }
     }
