@@ -231,7 +231,7 @@ namespace lainlib.Cryptography
                     keyIV
                 };
 
-                IO.WriteLinesToFile(lines, string.Format(path+@".keystore"));
+                IO.WriteLinesToFile(lines, string.Format(path + @".keystore"));
 
                 return new KeyStore(key, keySize, iv);
             }

@@ -341,7 +341,7 @@ namespace lainlib.Cryptography
             {
                 throw new ArgumentNullException(nameof(filePath));
             }
-            byte[] file = this.EncryptStringToBytes(fileContents);
+            byte[] file = EncryptStringToBytes(fileContents);
             IO.WriteBytesToFile(file, filePath);
         }
 
@@ -361,7 +361,7 @@ namespace lainlib.Cryptography
             decryptedFileContents = null;
             if (IO.ReadBytesFromFile(filePath, out byte[] encryptedFileContents)) // Read all bytes from file.
             {
-                decryptedFileContents = this.DecryptStringFromBytes(encryptedFileContents); // Decrypt bytes to string.
+                decryptedFileContents = DecryptStringFromBytes(encryptedFileContents); // Decrypt bytes to string.
             }
         }
 
@@ -388,7 +388,7 @@ namespace lainlib.Cryptography
             }
             try
             {
-                IO.WriteBytesToFile(this.EncryptStringToBytes(File.ReadAllText(fileToEncrypt)), outputFile);
+                IO.WriteBytesToFile(EncryptStringToBytes(File.ReadAllText(fileToEncrypt)), outputFile);
                 return true;
             }
             catch (Exception exception)

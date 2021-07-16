@@ -7,7 +7,6 @@
 
 #pragma warning disable IDE1006 // This line disables the Naming Rule Violation warning. (Visual Studio 2017)
 using System;
-using System.Drawing;
 
 namespace lainlib
 {
