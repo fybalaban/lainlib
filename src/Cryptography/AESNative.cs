@@ -12,35 +12,35 @@ using System.Security.Cryptography;
 namespace lainlib.Cryptography
 {
     /// <summary>
-    /// Provides methods for full file and string encryption/decryption with AES algorithm. Encapsulates System.Security.Cryptography.AesCryptoServiceProvider. Native code is faster with big loads.
+    /// Provides methods for file, string and byte array encryption/decryption with AES. Uses System.Security.Cryptography.AesCryptoServiceProvider. Native code is faster with big loads.
     /// </summary>
     public class AESNative : IDisposable
     {
         #region Properties
         /// <summary>
-        /// Specifies the type of padding to apply when the message data block is shorter than the full number of bytes needed for a cryptographic operation. (From Microsoft)
+        /// Specifies the type of padding to apply when the message data block is shorter than the full number of bytes needed for a cryptographic operation
         /// </summary>
         public PaddingMode PaddingMode { get; private set; }
+
         /// <summary>
-        /// Specifies the block cipher mode to use for encryption. (From Microsoft)
+        /// Specifies the block cipher mode to use for encryption
         /// </summary>
         public CipherMode CipherMode { get; private set; }
+
         /// <summary>
-        /// The key for the symmetric algorithm. (From Microsoft)
+        /// The key for the symmetric algorithm
         /// </summary>
         public byte[] Key { get; private set; }
+
         /// <summary>
-        /// The size, in bits, of the key used by the symmetric algorithm. (From Microsoft)
+        /// The size, in bits, of the key used by the symmetric algorithm
         /// </summary>
         public int KeySize { get; private set; }
+
         /// <summary>
-        /// The initialization vector to use for the symmetric algorithm. (From Microsoft)
+        /// The initialization vector to use for the symmetric algorithm
         /// </summary>
         public byte[] IV { get; private set; }
-        #endregion
-
-        #region Fields
-        private readonly AesCryptoServiceProvider InnerAes;
         #endregion
 
         #region Object Creation
@@ -54,14 +54,6 @@ namespace lainlib.Cryptography
             KeySize = 256;
             Key = AESResourceSupplier.GetKey(256);
             IV = AESResourceSupplier.GetIV();
-            InnerAes = new AesCryptoServiceProvider()
-            {
-                Padding = PaddingMode,
-                Mode = CipherMode,
-                KeySize = KeySize,
-                Key = Key,
-                IV = IV
-            };
         }
 
         /// <summary>
@@ -72,26 +64,15 @@ namespace lainlib.Cryptography
         public AESNative(int keySize, byte[] key)
         {
             if (!AESResourceSupplier.IsValidKeySize(keySize))
-            {
                 throw new ArgumentException("Argument: 'keySize' is not a valid size for AES algorithm.");
-            }
-            if (key == null || key.Length == 0)
-            {
+            if (key is null || key.Length is 0)
                 throw new ArgumentNullException(nameof(key));
-            }
+
             PaddingMode = PaddingMode.PKCS7;
             CipherMode = CipherMode.CBC;
             KeySize = keySize;
             Key = key;
             IV = AESResourceSupplier.GetIV();
-            InnerAes = new AesCryptoServiceProvider()
-            {
-                Padding = PaddingMode,
-                Mode = CipherMode,
-                KeySize = KeySize,
-                Key = Key,
-                IV = IV
-            };
         }
 
         /// <summary>
@@ -103,30 +84,17 @@ namespace lainlib.Cryptography
         public AESNative(int keySize, byte[] key, byte[] iv)
         {
             if (!AESResourceSupplier.IsValidKeySize(keySize))
-            {
                 throw new ArgumentException("Argument: 'keySize' is not a valid size for AES algorithm.");
-            }
-            if (key == null || key.Length == 0)
-            {
+            if (key is null || key.Length is 0)
                 throw new ArgumentNullException(nameof(key));
-            }
-            if (iv == null || iv.Length == 0)
-            {
+            if (iv is null || iv.Length is 0)
                 throw new ArgumentNullException(nameof(iv));
-            }
+
             PaddingMode = PaddingMode.PKCS7;
             CipherMode = CipherMode.CBC;
             KeySize = keySize;
             Key = key;
             IV = iv;
-            InnerAes = new AesCryptoServiceProvider()
-            {
-                Padding = PaddingMode,
-                Mode = CipherMode,
-                KeySize = KeySize,
-                Key = Key,
-                IV = IV
-            };
         }
 
         /// <summary>
@@ -136,26 +104,15 @@ namespace lainlib.Cryptography
         public AESNative(KeyStore keystore)
         {
             if (!AESResourceSupplier.IsValidKeySize(keystore.KeySize))
-            {
                 throw new ArgumentException("Argument: 'keySize' is not a valid size for AES algorithm.");
-            }
-            if (keystore.Key == null || keystore.Key.Length == 0 || keystore.IV == null || keystore.IV.Length == 0)
-            {
+            if (keystore.Key is null || keystore.Key.Length is 0 || keystore.IV is null || keystore.IV.Length is 0)
                 throw new ArgumentNullException(nameof(keystore));
-            }
+
             PaddingMode = PaddingMode.PKCS7;
             CipherMode = CipherMode.CBC;
             KeySize = keystore.KeySize;
             Key = keystore.Key;
             IV = keystore.IV;
-            InnerAes = new AesCryptoServiceProvider()
-            {
-                Padding = PaddingMode,
-                Mode = CipherMode,
-                KeySize = KeySize,
-                Key = Key,
-                IV = IV
-            };
         }
 
         /// <summary>
@@ -168,30 +125,17 @@ namespace lainlib.Cryptography
         public AESNative(int keySize, byte[] key, byte[] iv, PaddingMode paddingMode)
         {
             if (!AESResourceSupplier.IsValidKeySize(keySize))
-            {
                 throw new ArgumentException("Argument: 'keySize' is not a valid size for AES algorithm.");
-            }
-            if (key == null || key.Length == 0)
-            {
+            if (key is null || key.Length is 0)
                 throw new ArgumentNullException(nameof(key));
-            }
-            if (iv == null || iv.Length == 0)
-            {
+            if (iv is null || iv.Length is 0)
                 throw new ArgumentNullException(nameof(iv));
-            }
+
             PaddingMode = paddingMode;
             CipherMode = CipherMode.CBC;
             KeySize = keySize;
             Key = key;
             IV = iv;
-            InnerAes = new AesCryptoServiceProvider()
-            {
-                Padding = PaddingMode,
-                Mode = CipherMode,
-                KeySize = KeySize,
-                Key = Key,
-                IV = IV
-            };
         }
 
         /// <summary>
@@ -204,30 +148,17 @@ namespace lainlib.Cryptography
         public AESNative(int keySize, byte[] key, byte[] iv, CipherMode cipherMode)
         {
             if (!AESResourceSupplier.IsValidKeySize(keySize))
-            {
                 throw new ArgumentException("Argument: 'keySize' is not a valid size for AES algorithm.");
-            }
-            if (key == null || key.Length == 0)
-            {
+            if (key is null || key.Length is 0)
                 throw new ArgumentNullException(nameof(key));
-            }
-            if (iv == null || iv.Length == 0)
-            {
+            if (iv is null || iv.Length is 0)
                 throw new ArgumentNullException(nameof(iv));
-            }
+
             PaddingMode = PaddingMode.PKCS7;
             CipherMode = cipherMode;
             KeySize = keySize;
             Key = key;
             IV = iv;
-            InnerAes = new AesCryptoServiceProvider()
-            {
-                Padding = PaddingMode,
-                Mode = CipherMode,
-                KeySize = KeySize,
-                Key = Key,
-                IV = IV
-            };
         }
 
         /// <summary>
@@ -241,30 +172,17 @@ namespace lainlib.Cryptography
         public AESNative(int keySize, byte[] key, byte[] iv, PaddingMode paddingMode, CipherMode cipherMode)
         {
             if (!AESResourceSupplier.IsValidKeySize(keySize))
-            {
                 throw new ArgumentException("Argument: 'keySize' is not a valid size for AES algorithm.");
-            }
-            if (key == null || key.Length == 0)
-            {
+            if (key is null || key.Length is 0)
                 throw new ArgumentNullException(nameof(key));
-            }
-            if (iv == null || iv.Length == 0)
-            {
+            if (iv is null || iv.Length is 0)
                 throw new ArgumentNullException(nameof(iv));
-            }
+
             PaddingMode = paddingMode;
             CipherMode = cipherMode;
             KeySize = keySize;
             Key = key;
             IV = iv;
-            InnerAes = new AesCryptoServiceProvider()
-            {
-                Padding = PaddingMode,
-                Mode = CipherMode,
-                KeySize = KeySize,
-                Key = Key,
-                IV = IV
-            };
         }
         #endregion
 
@@ -276,125 +194,159 @@ namespace lainlib.Cryptography
         /// <returns></returns>
         public byte[] EncryptStringToBytes(string plainText)
         {
-            if (!plainText.Valid()) // Do validity check
-            {
+            if (plainText is null or @"")
                 throw new ArgumentNullException(nameof(plainText));
-            }
 
-            byte[] encrypted;
-            ICryptoTransform encryptor = InnerAes.CreateEncryptor(InnerAes.Key, InnerAes.IV); // Create an encryptor to perform the stream transform.
-
-            using (MemoryStream msEncrypt = new()) // Create the streams used for encryption.
+            using (AesCryptoServiceProvider aes = new())
             {
-                using (CryptoStream csEncrypt = new(msEncrypt, encryptor, CryptoStreamMode.Write))
+                aes.Padding = PaddingMode;
+                aes.Mode = CipherMode;
+                aes.KeySize = KeySize;
+                aes.Key = Key;
+                aes.IV = IV;
+
+                ICryptoTransform encryptor = aes.CreateEncryptor(); // Create an encryptor to perform the stream transform
+                using (MemoryStream ms = new()) // Create the stream used to retrieve encrypted data
                 {
-                    using (StreamWriter swEncrypt = new(csEncrypt))
+                    using (CryptoStream cs = new(ms, encryptor, CryptoStreamMode.Write)) // Create the stream to perform the actual encryption
                     {
-                        swEncrypt.Write(plainText); // Write all data to the stream.
+                        using (StreamWriter sw = new(cs)) // Create StreamWriter to access and write data to CryptoStream
+                            sw.Write(plainText); // Write data to the stream
+                        return ms.ToArray(); // Return encrypted data from MemoryStream
                     }
-                    encrypted = msEncrypt.ToArray();
                 }
             }
-            return encrypted; // Return the encrypted bytes from the memory stream.
         }
 
         /// <summary>
-        /// Decrypts cipherText byte array to plain text.
+        /// Decrypts cipher byte array to plain text.
         /// </summary>
         /// <param name="cipherText">Byte[] to decrypt</param>
         /// <returns></returns>
-        public string DecryptStringFromBytes(byte[] cipherText)
+        public string DecryptBytesToString(byte[] cipher)
         {
-            if (cipherText == null || cipherText.Length <= 0) // Do null check.
+            if (cipher is null || cipher.Length is 0)
+                throw new ArgumentNullException(nameof(cipher));
+
+            using (AesCryptoServiceProvider aes = new())
             {
-                throw new ArgumentNullException(nameof(cipherText));
-            }
-            string plaintext = string.Empty; // Declare the string used to hold the decrypted text.
-            ICryptoTransform decryptor = InnerAes.CreateDecryptor(InnerAes.Key, InnerAes.IV); // Create a decryptor to perform the stream transform.
-            using (MemoryStream msDecrypt = new(cipherText)) // Create the streams used for decryption.
-            {
-                using (CryptoStream csDecrypt = new(msDecrypt, decryptor, CryptoStreamMode.Read))
+                aes.Padding = PaddingMode;
+                aes.Mode = CipherMode;
+                aes.KeySize = KeySize;
+                aes.Key = Key;
+                aes.IV = IV;
+
+                ICryptoTransform decryptor = aes.CreateDecryptor(); // Create a decryptor to perform the stream transform.
+                using (MemoryStream ms = new(cipher)) // Create the streams used for decryption.
                 {
-                    using (StreamReader srDecrypt = new(csDecrypt))
+                    using (CryptoStream cs = new(ms, decryptor, CryptoStreamMode.Read))
                     {
-                        plaintext = srDecrypt.ReadToEnd(); // Read the decrypted bytes from the decrypting stream and place them in a string.
+                        using (StreamReader sr = new(cs))
+                            return sr.ReadToEnd(); // Read the decrypted bytes from the decrypting stream and place them in a string.
                     }
                 }
             }
-            return plaintext;
         }
 
         /// <summary>
-        /// Encrypts supplied text and writes encrypted bytes to a file at supplied filePath.
+        /// Encrypts supplied byte array using encryptor from initialized AES crypto supplier
         /// </summary>
-        /// <param name="fileContents">Text to encrypt</param>
-        /// <param name="filePath">Path to file.</param>
+        /// <param name="original">Original array to encrypt</param>
+        /// <returns>If successful, returns encrypted byte array otherwise returns null</returns>
+        public byte[] EncryptBytes(byte[] original)
+        {
+            if (original is null || original.Length is 0)
+                throw new ArgumentNullException(nameof(original));
+
+            using (AesCryptoServiceProvider aes = new())
+            {
+                aes.Padding = PaddingMode;
+                aes.Mode = CipherMode;
+                aes.KeySize = KeySize;
+                aes.Key = Key;
+                aes.IV = IV;
+
+                using (ICryptoTransform encryptor = aes.CreateEncryptor())
+                    return PerformCryptography(original, encryptor);
+            }
+        }
+
+        /// <summary>
+        /// Decrypts supplied byte array using decryptor from initialized AES crypto supplier
+        /// </summary>
+        /// <param name="cipher">Ciphered data array to decrypt</param>
         /// <returns></returns>
-        public void EncryptFile(string fileContents, string filePath)
+        public byte[] DecryptBytes(byte[] cipher)
         {
-            // Check the arguments.
-            if (!fileContents.Valid())
-            {
-                throw new ArgumentNullException(nameof(fileContents));
-            }
-            if (!filePath.Valid())
-            {
-                throw new ArgumentNullException(nameof(filePath));
-            }
-            byte[] file = EncryptStringToBytes(fileContents);
-            IO.WriteBytesToFile(file, filePath);
-        }
+            if (cipher is null || cipher.Length is 0)
+                throw new ArgumentNullException(nameof(cipher));
 
-        /// <summary>
-        /// Reads from supplied file, decrypts file contents, outputs via decryptedFileContents.
-        /// </summary>
-        /// <param name="decryptedFileContents">Output</param>
-        /// <param name="filePath">Path to file.</param>
-        public void DecryptFile(out string decryptedFileContents, string filePath)
-        {
-            // Check the arguments.
-            if (!filePath.Valid())
+            using (AesCryptoServiceProvider aes = new())
             {
-                throw new ArgumentNullException(nameof(filePath));
-            }
+                aes.Padding = PaddingMode;
+                aes.Mode = CipherMode;
+                aes.KeySize = KeySize;
+                aes.Key = Key;
+                aes.IV = IV;
 
-            decryptedFileContents = null;
-            if (IO.ReadBytesFromFile(filePath, out byte[] encryptedFileContents)) // Read all bytes from file.
-            {
-                decryptedFileContents = DecryptStringFromBytes(encryptedFileContents); // Decrypt bytes to string.
+                using (ICryptoTransform decryptor = aes.CreateDecryptor())
+                    return PerformCryptography(cipher, decryptor);
             }
         }
 
         /// <summary>
-        /// Encrypts given file and outputs to given path. Return true if encryption was successful.
+        /// Used to encrypt/decrypt bytes of data. 
         /// </summary>
-        /// <param name="fileToEncrypt">Path of file to encrypt</param>
-        /// <param name="outputFile">Path to output</param>
+        /// <param name="data"></param>
+        /// <param name="transform"></param>
         /// <returns></returns>
-        public bool Encrypt(string fileToEncrypt, string outputFile)
+        private static byte[] PerformCryptography(byte[] data, ICryptoTransform transform)
         {
-            // Check the arguments.
-            if (!fileToEncrypt.Valid())
+            using (MemoryStream ms = new())
             {
-                throw new ArgumentNullException(nameof(fileToEncrypt));
+                using (CryptoStream cs = new(ms, transform, CryptoStreamMode.Write))
+                {
+                    cs.Write(data, 0, data.Length);
+                    cs.FlushFinalBlock();
+                    return ms.ToArray();
+                }
             }
-            if (!File.Exists(fileToEncrypt))
-            {
-                throw new FileNotFoundException($"'{fileToEncrypt}' is not a valid file.", fileToEncrypt);
-            }
-            if (!outputFile.Valid())
-            {
-                throw new ArgumentNullException(nameof(outputFile));
-            }
-            try
-            {
-                IO.WriteBytesToFile(EncryptStringToBytes(File.ReadAllText(fileToEncrypt)), outputFile);
-                return true;
-            }
-            catch (Exception exception)
-            {
-                throw exception;
-            }
+        }
+
+        /// <summary>
+        /// Reads file to a byte array, performs encryption on read byte array, saves cipher bytes to same filename with '.enc' appended
+        /// </summary>
+        /// <param name="filePath">Path to file to encrypt</param>
+        /// <returns>Returns the path to encrypted file</returns>
+        public string EncryptFile(string filePath)
+        {
+            if (filePath is null or @"")
+                throw new ArgumentNullException(nameof(filePath));
+            if (!File.Exists(filePath))
+                throw new FileNotFoundException("File not found!", filePath);
+
+            byte[] originalFileContent = File.ReadAllBytes(filePath);
+            byte[] encryptedContent = EncryptBytes(originalFileContent);
+            File.WriteAllBytes(filePath + ".enc", encryptedContent);
+            return filePath + ".enc";
+        }
+
+        /// <summary>
+        /// Reads encrypted file to a byte array, performs decryption on read byte array, saves decrypted content to same filename, removing '.enc'
+        /// </summary>
+        /// <param name="filePath">Path to encrypted file</param>
+        /// <returns>Returns the path to decrypted file</returns>
+        public string DecryptFile(string filePath)
+        {
+            if (filePath is null or @"")
+                throw new ArgumentNullException(nameof(filePath));
+            if (!File.Exists(filePath))
+                throw new FileNotFoundException("File not found!", filePath);
+
+            byte[] encryptedContent = File.ReadAllBytes(filePath);
+            byte[] decryptedContent = DecryptBytes(encryptedContent);
+            File.WriteAllBytes(filePath.Replace(".enc", string.Empty), decryptedContent);
+            return filePath.Replace(".enc", string.Empty);
         }
         #endregion
 
@@ -413,7 +365,6 @@ namespace lainlib.Cryptography
                     Key = null;
                     IV = null;
                 }
-                InnerAes.Dispose();
 
                 disposedValue = true;
             }

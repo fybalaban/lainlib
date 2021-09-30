@@ -1,193 +1,126 @@
-﻿using System.Collections.Generic;
+/*
+ *         lainlib
+ * 
+ *         lainlib by fybalaban @ 2021
+ *         https://www.github.com/fybalaban/lainlib
+*/
+
+using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace lainlib
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public static class Collections
     {
         /// <summary>
-        /// Returns index of element in referenced array.
+        /// Adds supplied element to last position of referenced array
         /// </summary>
-        /// <typeparam name="T">The sky is the limit ;)</typeparam>
-        /// <param name="arr">Array to search in</param>
-        /// <param name="element">Element to search for</param>
-        /// <returns>Returns -1 if something is wrong.</returns>
-        public static int GetIndexOfElement<T>(T[] arr, T element)
+        /// <typeparam name="T"></typeparam>
+        /// <param name="array"></param>
+        /// <param name="element"></param>
+        public static void AddElementToArray<T>(ref T[] array, T element)
         {
-            if (arr.Length > 0 && element != null)
+            if (array is null || array?.Length is 0)
+                throw new ArgumentNullException(nameof(array));
+
+            T[] buffer = new T[array.Length + 1];
+            array.CopyTo(buffer, 0);
+            buffer[^1] = element;
+            array = buffer;
+        }
+
+        /// <summary>
+        /// Inserts supplied element at supplied index of referenced array
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="array"></param>
+        /// <param name="element"></param>
+        /// <param name="index"></param>
+        public static void InsertElementToArray<T>(ref T[] array, T element, int index)
+        {
+            if (array is null || array?.Length is 0)
+                throw new ArgumentNullException(nameof(array));
+            if (index < 0 || index >= array.Length)
+                throw new ArgumentOutOfRangeException(nameof(index));
+
+            T[] buffer = new T[array.Length + 1];
+
+            for (int i = 0; i < buffer.Length; i++)
+                buffer[i] = i < index ? array[i] : i == index && !buffer[index].Equals(element) ? element : array[i - 1];
+
+            array = buffer;
+
+        }
+
+        /// <summary>
+        /// Removes element from supplied index of referenced array
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="arr"></param>
+        /// <param name="index"></param>
+        public static void RemoveElementFromArray<T>(ref T[] array, int index)
+        {
+            if (array is null || array?.Length is 0)
+                throw new ArgumentNullException(nameof(array));
+            if (index < 0 || index >= array.Length)
+                throw new ArgumentOutOfRangeException(nameof(index));
+
+            T[] buffer = new T[array.Length - 1];
+
+            for (int i = 0; i < array.Length; i++)
             {
-                for (int i = 0; i < arr.Length; i++)
+                if (i < index)
                 {
-                    if (element.Equals(arr[i]))
-                    {
-                        return i;
-                    }
+                    buffer[i] = array[i];
                 }
+                else if (i > index)
+                {
+                    buffer[i - 1] = array[i];
+                }
+            }
+
+            array = buffer;
+        }
+
+        /// <summary>
+        /// Returns index of element that contains the supplied object if it is contained in supplied IEnumerable object. If object is not found, returns -1
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="enumerable"></param>
+        /// <param name="thisObject"></param>
+        /// <returns></returns>
+        public static int GetIndexOf<T>(this IEnumerable<T> enumerable, T thisObject)
+        {
+            if (enumerable is null || enumerable?.Any() is false)
+                throw new ArgumentNullException(nameof(enumerable));
+
+            for (int i = 0; i < enumerable.Count(); i++)
+            {
+                if (enumerable.ElementAt(i).Equals(thisObject))
+                    return i;
             }
             return -1;
         }
 
         /// <summary>
-        /// Remove anything from any index of referenced array.
-        /// </summary>
-        /// <typeparam name="T">The sky is the limit ;)</typeparam>
-        /// <param name="arr"></param>
-        /// <param name="index"></param>
-        public static void RemoveAt<T>(ref T[] arr, int index)
-        {
-            if (index >= 0 && index < arr.Length)
-            {
-                while (index < arr.Length - 1)
-                {
-                    arr[index] = arr[index + 1];
-                    index++;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Returns true if this enumerable object of type T contains object of type T. If the enumerable object is null or does not contain any element, returns false.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="enumerable"></param>
-        /// <param name="thisObject"></param>
-        /// <returns></returns>
-        public static bool Contains<T>(this IEnumerable<T> enumerable, T thisObject)
-        {
-            if (enumerable != null && enumerable.Any())
-            {
-                for (int i = 0; i < enumerable.Count(); i++)
-                {
-                    if (enumerable.ElementAt(i).Equals(thisObject))
-                    {
-                        return true;
-                    }
-                }
-            }
-            return false;
-        }
-
-        /// <summary>
-        /// Returns true if this array of type T contains object of type T. If the array is null or does not contain any element, returns false.
+        /// Returns index of element that contains the supplied object if it is contained in supplied array. If object is not found, returns -1
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="array"></param>
         /// <param name="thisObject"></param>
         /// <returns></returns>
-        public static bool Contains<T>(this T[] array, T thisObject)
+        public static int GetIndexOf<T>(this T[] array, T thisObject)
         {
-            if (array != null && array.Length > 0)
-            {
-                for (int i = 0; i < array.Length; i++)
-                {
-                    if (array[i].Equals(thisObject))
-                    {
-                        return true;
-                    }
-                }
-            }
-            return false;
-        }
+            if (array is null || array?.Length is 0)
+                throw new ArgumentNullException(nameof(array));
 
-        /// <summary>
-        /// Returns true if this enumerable object of type T contains object of type T. If the enumerable object is null or does not contain any element, returns false.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="enumerable"></param>
-        /// <param name="thisObject"></param>
-        /// <returns></returns>
-        public static bool Contains<T>(this IEnumerable<T> enumerable, T thisObject, out int indexOfObject)
-        {
-            indexOfObject = -1;
-            if (enumerable != null && enumerable.Any())
+            for (int i = 0; i < array.Length; i++)
             {
-                for (int i = 0; i < enumerable.Count(); i++)
-                {
-                    if (enumerable.ElementAt(i).Equals(thisObject))
-                    {
-                        indexOfObject = i;
-                        return true;
-                    }
-                }
+                if (array[i].Equals(thisObject))
+                    return i;
             }
-            return false;
-        }
-
-        /// <summary>
-        /// Returns true if this array of type T contains object of type T. If the array is null or does not contain any element, returns false.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="array"></param>
-        /// <param name="thisObject"></param>
-        /// <returns></returns>
-        public static bool Contains<T>(this T[] array, T thisObject, out int indexOfObject)
-        {
-            indexOfObject = -1;
-            if (array != null && array.Length > 0)
-            {
-                for (int i = 0; i < array.Length; i++)
-                {
-                    if (array[i].Equals(thisObject))
-                    {
-                        indexOfObject = i;
-                        return true;
-                    }
-                }
-            }
-            return false;
-        }
-
-        /// <summary>
-        /// Iterates through the string array and looks for an element that contains the supplied value. When an element that contains the value is found, method returns <see langword="true"/>, and <see langword="out"/> parameter contains the index of the element.
-        /// If the array is null or does not contain any element, returns false.
-        /// </summary>
-        /// <param name="array"></param>
-        /// <param name="lookup"></param>
-        /// <param name="indexOfContainingElement"></param>
-        /// <returns></returns>
-        public static bool AnyElementContains(this string[] array, string value, out int indexOfContainingElement)
-        {
-            indexOfContainingElement = -1;
-            if (array != null && array.Length > 0)
-            {
-                for (int i = 0; i < array.Length; i++)
-                {
-                    if (array[i].Contains(value))
-                    {
-                        indexOfContainingElement = i;
-                        return true;
-                    }
-                }
-            }
-            return false;
-        }
-
-        /// <summary>
-        /// Iterates through the string enumerable and looks for an element that contains the supplied value. When an element that contains the value is found, method returns <see langword="true"/>, and <see langword="out"/> parameter contains the index of the element.
-        /// If the enumerable object is null or does not contain any element, returns false.
-        /// </summary>
-        /// <param name="array"></param>
-        /// <param name="lookup"></param>
-        /// <param name="indexOfContainingElement"></param>
-        /// <returns></returns>
-        public static bool AnyElementContains(this IEnumerable<string> enumerable, string value, out int indexOfContainingElement)
-        {
-            indexOfContainingElement = -1;
-            if (enumerable != null && enumerable.Any())
-            {
-                for (int i = 0; i < enumerable.Count(); i++)
-                {
-                    if (enumerable.ElementAt(i).Contains(value))
-                    {
-                        indexOfContainingElement = i;
-                        return true;
-                    }
-                }
-            }
-            return false;
+            return -1;
         }
 
         /// <summary>

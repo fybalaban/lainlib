@@ -2,3 +2,4 @@ bin/
 obj/
 /nuget.config
 .vs/
+TestResults/

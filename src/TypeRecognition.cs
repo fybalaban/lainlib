@@ -25,10 +25,7 @@ namespace lainlib
         /// </summary>
         /// <param name="value">The input to find type of</param>
         /// <returns></returns>
-        public static bool IsBoolean(this string value)
-        {
-            return value.ToLower().Trim() == "true" || value.ToLower().Trim() == "false";
-        }
+        public static bool IsBoolean(this string value) => value.ToLower().Trim() == "true" || value.ToLower().Trim() == "false";
 
         /// <summary>
         /// Returns true if given string contains a string that IS NOT a boolean, an integer or a double expression.

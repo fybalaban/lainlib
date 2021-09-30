@@ -1,226 +1,349 @@
 ﻿/*
- *         lainlib.ConsoleMethods
+ *         lainlib
  * 
  *         lainlib by fybalaban @ 2021
  *         https://www.github.com/fybalaban/lainlib
  */
 
-#pragma warning disable IDE1006 // This line disables the Naming Rule Violation warning. (Visual Studio 2017)
+#pragma warning disable IDE1006 // This line disables the Naming Rule Violation warning
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security;
+using System.Text.RegularExpressions;
+using System.Threading;
 
 namespace lainlib
 {
     /// <summary>
-    /// C++ like methods for faster typing and cooler looking codes. Include with 'using static lainlib.ConsoleMethods'.
+    /// This class contains C++ like named methods to make using System.Console more convinient. Include with 'using static lainlib.ConsoleMethods'
     /// </summary>
     public static class ConsoleMethods
     {
         /// <summary>
-        /// "Press any key to continue..."
+        /// Selects words wrapped in square brackets. [Hey] is a match, and [Hello world] is a match, but [hey there[ is not.
         /// </summary>
-        public static void pause()
+        public static readonly Regex SquareBracketsTagMatcher = new(@"(\[[^\[]*\])", RegexOptions.Compiled);
+
+        /// <summary>
+        /// Selects words wrapped in curly brackets. {Hey} is a match, and {Hello world} is a match, but {hey there{ is not.
+        /// </summary>
+        public static readonly Regex CurlyBracketsTagMatcher = new(@"(\{[^\{]*\})", RegexOptions.Compiled);
+
+        #region println
+        /// <summary>
+        /// Prints text representation of object, followed by the line terminator
+        /// </summary>
+        /// <param name="value">An object to print</param>
+        public static void println(object value) => Console.WriteLine(value);
+
+        /// <summary>
+        /// Prints text representation of object using specified format, followed by the line terminator
+        /// </summary>
+        /// <param name="format">A composite format string</param>
+        /// <param name="arg">An object to print</param>
+        public static void println(string format, object arg) => Console.WriteLine(format, arg);
+
+        /// <summary>
+        /// Prints text representation of specified array of objects using specified format, followed by the line terminator
+        /// </summary>
+        /// <param name="format">A composite format string</param>
+        /// <param name="arg">An array of objects to print</param>
+        public static void println(string format, params object[] arg) => Console.WriteLine(format, arg);
+
+        /// <summary>
+        /// Prints text representation of specified object to console window with specified forecolor, followed by the line terminator
+        /// </summary>
+        /// <param name="value">An object to print</param>
+        /// <param name="fColor">A ConsoleColor value to use</param>
+        public static void println(object value, ConsoleColor fColor)
         {
-            Console.WriteLine("Press any key to continue...");
-            Console.ReadKey(true);
+            ConsoleColor _fg = Console.ForegroundColor; // save consolecolor state
+            Console.ForegroundColor = fColor; // apply new color
+            println(value); // write string
+            Console.ForegroundColor = _fg; // set old consolecolor state
         }
 
         /// <summary>
-        /// return Console.Read();
+        /// Prints text representation of specified object to console window with specified forecolor and backcolor, followed by the line terminator
+        /// </summary>
+        /// <param name="value">An object to print</param>
+        /// <param name="bColor">A ConsoleColor value to use</param>
+        /// <param name="fColor">A ConsoleColor value to use</param>
+        public static void println(object value, ConsoleColor bColor, ConsoleColor fColor)
+        {
+            ConsoleColor _bg = Console.BackgroundColor;
+            ConsoleColor _fg = Console.ForegroundColor; // save consolecolor state
+
+            Console.BackgroundColor = bColor;
+            Console.ForegroundColor = fColor; // apply new color
+            println(value); // write string
+
+            Console.BackgroundColor = _bg;
+            Console.ForegroundColor = _fg; // set old consolecolor state
+        }
+
+        /// <summary>
+        /// Prints words wrapped with specified bracket characters in specified forecolors, followed by the line terminator. Check /doc/ConsoleMethods.md for usage examples
+        /// </summary>
+        /// <param name="format">An formatted string to print</param>
+        /// <param name="cBracket">First bracket used in words, pass '{' or '['</param>
+        /// <param name="fColor">A ConsoleColor value to use</param>
+        public static void println(string format, char cBracket, ConsoleColor fColor) => print(format + '\n', cBracket, fColor);
+
+        /// <summary>
+        /// Prints words wrapped with specified bracket characters in specified forecolor, followed by the line terminator. Check /doc/ConsoleMethods.md for usage examples
+        /// </summary>
+        /// <param name="format">An formatted string to print</param>
+        /// <param name="cBracket">First bracket used in words, pass '{' or '['</param>
+        /// <param name="aColors">An array of ConsoleColor values to use, count must be equal to wrapped words in format string</param>
+        public static void println(string format, char cBracket, params ConsoleColor[] aColors) => print(format + '\n', cBracket, aColors);
+        #endregion
+
+        #region print
+
+        /// <summary>
+        /// Prints text representation of specified value
+        /// </summary>
+        /// <param name="value">A value to write</param>
+        public static void print(object value) => Console.Write(value);
+
+        /// <summary>
+        /// Prints elements of array in specified amount of elements per line
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="array">Array containing elements to print of</param>
+        /// <param name="itemPerLine"></param>
+        public static void print<T>(T[] array, int itemPerLine)
+        {
+            if (array is not null && array.Length is not 0 && itemPerLine is not 0)
+            {
+                int count = 0;
+                for (int i = 0; i < array.Length; i++)
+                {
+                    if (count < itemPerLine)
+                    {
+                        print($"{array[i]} ");
+                        count++;
+                    }
+                    else if (count == itemPerLine)
+                    {
+                        count = 0;
+                        i -= 1;
+                        print($"\n");
+                    }
+                }
+                print("\n");
+            }
+        }
+
+        /// <summary>
+        /// Prints text representation of specified object using specified format
+        /// </summary>
+        /// <param name="format">A composite format string</param>
+        /// <param name="arg">An object to write</param>
+        public static void print(string format, object arg) => Console.Write(format, arg);
+
+        /// <summary>
+        /// Prints text representation of specified array of objects using specified format
+        /// </summary>
+        /// <param name="format">A composite format string</param>
+        /// <param name="arg">An array of objects to write</param>
+        public static void print(string format, params object[] arg) => Console.Write(format, arg);
+
+        /// <summary>
+        /// Prints text representation of specified object to console window with specified forecolor
+        /// </summary>
+        /// <param name="value">An object to write</param>
+        /// <param name="fColor">A ConsoleColor value to use</param>
+        public static void print(object value, ConsoleColor fColor)
+        {
+            ConsoleColor _fg = Console.ForegroundColor; // save consolecolor state
+            Console.ForegroundColor = fColor; // apply new color
+            print(value); // write string
+            Console.ForegroundColor = _fg; // set old consolecolor state
+        }
+
+        /// <summary>
+        /// Prints text representation of specified object to console window with specified forecolor and backcolor
+        /// </summary>
+        /// <param name="value">An object to write</param>
+        /// <param name="bColor">A ConsoleColor value to use</param>
+        /// <param name="fColor">A ConsoleColor value to use</param>
+        public static void print(object value, ConsoleColor bColor, ConsoleColor fColor)
+        {
+            ConsoleColor _bg = Console.BackgroundColor;
+            ConsoleColor _fg = Console.ForegroundColor; // save consolecolor state
+
+            Console.BackgroundColor = bColor;
+            Console.ForegroundColor = fColor; // apply new color
+            print(value); // write string
+
+            Console.BackgroundColor = _bg;
+            Console.ForegroundColor = _fg; // set old consolecolor state
+        }
+
+        /// <summary>
+        /// Prints words wrapped with specified bracket characters in specified forecolor. Check /doc/ConsoleMethods.md for usage examples
+        /// </summary>
+        /// <param name="format">An formatted string to print</param>
+        /// <param name="cBracket">First bracket used in words, pass '{' or '['</param>
+        /// <param name="fColor">A ConsoleColor value to use</param>
+        public static void print(string format, char cBracket, ConsoleColor fColor) => print(format, cBracket, new ConsoleColor[] { fColor });
+
+        /// <summary>
+        /// Prints words wrapped with specified bracket characters in specified forecolors. Check /doc/ConsoleMethods.md for usage examples
+        /// </summary>
+        /// <param name="format">An formatted string to print</param>
+        /// <param name="cBracket">First bracket used in words, pass '{' or '['</param>
+        /// <param name="aColors">An array of ConsoleColor values to use, count must be equal to wrapped words in format string</param>
+        public static void print(string format, char cBracket, params ConsoleColor[] aColors)
+        {
+            ConsoleColor _bg = Console.BackgroundColor;
+            ConsoleColor _fg = Console.ForegroundColor;
+
+            int argindex = 0;
+            List<string> pieces = (cBracket is '{' or '}') ? CurlyBracketsTagMatcher.Split(format).ToList() : SquareBracketsTagMatcher.Split(format).ToList();
+            pieces.RemoveAll(x => x is @"" || x == string.Empty);
+            for (int i = 0; i < pieces.Count; i++)
+            {
+                string piece = pieces[i];
+                if (piece.StartsWith(cBracket.ToString()) && piece.EndsWith(cBracket is '{' ? "}" : "]"))
+                {
+                    Console.ForegroundColor = aColors[argindex];
+                    piece = piece[1..^1];
+                    argindex = aColors.Length is 1 ? argindex : argindex + 1;
+                }
+                Console.Write(piece);
+                Console.BackgroundColor = _bg;
+                Console.ForegroundColor = _fg;
+            }
+        }
+        #endregion
+
+#nullable enable
+        /// <summary>
+        /// Reads next line of characters from console
         /// </summary>
         /// <returns></returns>
+        public static string? readln() => Console.ReadLine();
+
+        /// <summary>
+        /// Reads next character from console
+        /// </summary>
+        /// <returns>The next character if there's any, or -1 if there is nothing to read</returns>
         public static int read()
         {
             return Console.Read();
         }
 
         /// <summary>
-        /// return Console.ReadLine();
+        /// Prints supplied question in "<question> (y/n): " format and waits for appropriate answer. Returns true if user enters Y/y and false if user enters N/n.
         /// </summary>
+        /// <param name="question">Please supply the question without (y/n) or semicolon, those will be added by this method</param>
         /// <returns></returns>
-        public static string readln()
+        public static bool ask(string question)
         {
-            return Console.ReadLine();
-        }
-
-        /// <summary>
-        /// Changes console title if new_title is a valid string.
-        /// </summary>
-        /// <param name="new_title"></param>
-        public static void tit(string new_title)
-        {
-            if (Text.Valid(new_title))
+            while (true)
             {
-                Console.Title = new_title;
-            }
-        }
+                Console.Write(string.Format("{0} (Y/n): ", question));
+                string? answer = Console.ReadLine()?.ToLower();
 
-        #region write
-        /// <summary>
-        /// Console.Write(buffer.ToString());
-        /// </summary>
-        /// <param name="buffer"></param>
-        public static void write(object buffer)
-        {
-            Console.Write(buffer.ToString());
-        }
-
-        /// <summary>
-        /// Console.Write(buffer);
-        /// </summary>
-        /// <param name="buffer"></param>
-        public static void write(string buffer)
-        {
-            Console.Write(buffer);
-        }
-
-        /// <summary>
-        /// Console.Write(format, args);
-        /// </summary>
-        /// <param name="format"></param>
-        /// <param name="args"></param>
-        public static void write(string format, params object[] args)
-        {
-            Console.Write(format, args);
-        }
-
-        /// <summary>
-        /// Console.Write(buffer.ToString(), color);
-        /// </summary>
-        /// <param name="buffer"></param>
-        public static void write(object buffer, ConsoleColor color)
-        {
-            ConsoleColor defaultColor = Console.ForegroundColor;
-            Console.ForegroundColor = color;
-            Console.Write(buffer.ToString());
-            Console.ForegroundColor = defaultColor;
-        }
-
-        /// <summary>
-        /// Console.Write(buffer, color);
-        /// </summary>
-        /// <param name="buffer"></param>
-        public static void write(string buffer, ConsoleColor color)
-        {
-            ConsoleColor defaultColor = Console.ForegroundColor;
-            Console.ForegroundColor = color;
-            Console.Write(buffer);
-            Console.ForegroundColor = defaultColor;
-        }
-
-        /// <summary>
-        /// Console.Write(format, color, args);
-        /// </summary>
-        /// <param name="format"></param>
-        /// <param name="args"></param>
-        public static void write(string format, ConsoleColor color, params object[] args)
-        {
-            ConsoleColor defaultColor = Console.ForegroundColor;
-            Console.ForegroundColor = color;
-            Console.Write(format, args);
-            Console.ForegroundColor = defaultColor;
-        }
-        #endregion
-
-        #region writeln
-        /// <summary>
-        /// Console.WriteLine(buffer.ToString());
-        /// </summary>
-        /// <param name="buffer"></param>
-        public static void writeln(object buffer)
-        {
-            Console.WriteLine(buffer.ToString());
-        }
-
-        /// <summary>
-        /// Console.WriteLine(buffer);
-        /// </summary>
-        /// <param name="buffer"></param>
-        public static void writeln(string buffer)
-        {
-            Console.WriteLine(buffer);
-        }
-
-        /// <summary>
-        /// Console.WriteLine(format, args);
-        /// </summary>
-        /// <param name="format"></param>
-        /// <param name="args"></param>
-        public static void writeln(string format, params object[] args)
-        {
-            Console.WriteLine(format, args);
-        }
-
-        /// <summary>
-        /// Console.WriteLine(buffer.ToString(), color);
-        /// </summary>
-        /// <param name="buffer"></param>
-        public static void writeln(object buffer, ConsoleColor color)
-        {
-            ConsoleColor defaultColor = Console.ForegroundColor;
-            Console.ForegroundColor = color;
-            Console.WriteLine(buffer.ToString());
-            Console.ForegroundColor = defaultColor;
-        }
-
-        /// <summary>
-        /// Console.WriteLine(buffer, color);
-        /// </summary>
-        /// <param name="buffer"></param>
-        public static void writeln(string buffer, ConsoleColor color)
-        {
-            ConsoleColor defaultColor = Console.ForegroundColor;
-            Console.ForegroundColor = color;
-            Console.WriteLine(buffer);
-            Console.ForegroundColor = defaultColor;
-        }
-
-        /// <summary>
-        /// Console.WriteLine(format, color, args);
-        /// </summary>
-        /// <param name="format"></param>
-        /// <param name="args"></param>
-        public static void writeln(string format, ConsoleColor color, params object[] args)
-        {
-            ConsoleColor defaultColor = Console.ForegroundColor;
-            Console.ForegroundColor = color;
-            Console.WriteLine(format, args);
-            Console.ForegroundColor = defaultColor;
-        }
-        #endregion
-
-        /// <summary>
-        /// Overwrites last line with new content.
-        /// </summary>
-        /// <param name="buffer"></param>
-        public static void updateln(string buffer)
-        {
-            Console.Write(string.Format(@"\r{0}                                ", buffer));
-        }
-
-        /// <summary>
-        /// Ask the user a question, if the user enters "Y" or "y", this method returns <see langword="true"/> otherwise false.
-        /// </summary>
-        /// <param name="question">Please use a format that is understandable by the user.</param>
-        /// <returns></returns>
-        public static bool ask(string question = @"Question? (Y/N): ")
-        {
-            bool answered = false;
-            while (!answered)
-            {
-                write(question);
-                string input = readln();
-
-                if (input == "Y" || input == "y")
-                {
+                if (answer is null)
+                    println("please enter with (Y)es or (N)o");
+                else if (answer is "y")
                     return true;
-                }
-                else if (input == "N" || input == "n")
-                {
+                else if (answer is "n")
                     return false;
-                }
-                answered = false;
+                else
+                    println("please enter with (Y)es or (N)o");
             }
-            return false;
+        }
+#nullable restore
+
+        /// <summary>
+        /// Reads next line of characters, but writes a specified character instead of showing what was written. Useful for getting passwords from user in a secure way
+        /// </summary>
+        /// <param name="passwordChar">Character that will be printed instead of user input, '*' by default</param>
+        /// <returns>Returns read line of characters in SecureString object</returns>
+        public static SecureString readhidden(char passwordChar = '*')
+        {
+            SecureString str = new();
+            while (true)
+            {
+                ConsoleKeyInfo key = Console.ReadKey(true);
+                if (key.Key == ConsoleKey.Enter)
+                    break;
+                if (key.Key == ConsoleKey.Backspace && str.Length > 0)
+                {
+                    str.RemoveAt(str.Length - 1);
+                    Console.SetCursorPosition(Console.CursorLeft - 1, Console.CursorTop);
+                    Console.Write(" ");
+                    Console.SetCursorPosition(Console.CursorLeft - 1, Console.CursorTop);
+                }
+                else if (key.Key == ConsoleKey.UpArrow || key.Key == ConsoleKey.DownArrow || key.Key == ConsoleKey.LeftArrow || key.Key == ConsoleKey.RightArrow)
+                {
+                    // do absolutely nothing here, user shall not get out of this dialog
+                }
+                else if (key.Key != ConsoleKey.Backspace)
+                {
+                    str.AppendChar(key.KeyChar);
+                    Console.Write(passwordChar);
+                }
+            }
+            return str;
+        }
+
+        /// <summary>
+        /// Prints "Press any key to continue..." and waits for any key to be pressed
+        /// </summary>
+        public static void pause()
+        {
+            Console.WriteLine("Press any key to continue...");
+            Console.ReadKey();
+        }
+
+        /// <summary>
+        /// Shows a spin animation for specified amout of time
+        /// </summary>
+        /// <param name="holdMilliseconds">Amount of time to execute the animation in milliseconds</param>
+        public static void spin(double holdMilliseconds)
+        {
+            DateTime start = DateTime.UtcNow;
+            int counter = 0;
+            while (DateTime.UtcNow - start < TimeSpan.FromMilliseconds(holdMilliseconds))
+            {
+                counter++;
+                switch (counter % 4)
+                {
+                    case 0:
+                        Console.Write("/");
+                        counter = 0;
+                        break;
+                    case 1:
+                        Console.Write("-");
+                        break;
+                    case 3:
+                        Console.Write("\\");
+                        break;
+                    case 4:
+                        Console.Write("|");
+                        break;
+                }
+                Thread.Sleep(100);
+                Console.SetCursorPosition(Console.CursorLeft - 1, Console.CursorTop);
+            }
+        }
+
+        /// <summary>
+        /// Clears any text in current line
+        /// </summary>
+        public static void clearln()
+        {
+            int cursorcurrentline = Console.CursorTop;
+            Console.SetCursorPosition(0, Console.CursorTop);
+            Console.Write(new string(' ', Console.BufferWidth));
+            Console.SetCursorPosition(0, cursorcurrentline);
         }
 
         /// <summary>
@@ -353,7 +476,6 @@ namespace lainlib
             }
             return true;
         }
-
     }
 }
 #pragma warning restore IDE1006

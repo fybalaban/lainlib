@@ -19,10 +19,7 @@ namespace lainlib
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        public static bool Valid(this string value)
-        {
-            return !string.IsNullOrEmpty(value) && !string.IsNullOrWhiteSpace(value);
-        }
+        public static bool Valid(this string value) => !string.IsNullOrEmpty(value) && !string.IsNullOrWhiteSpace(value);
 
         /// <summary>
         /// Returns true if value contains invalidChar.
@@ -30,10 +27,7 @@ namespace lainlib
         /// <param name="value">This value</param>
         /// <param name="invalidChar">Character to find</param>
         /// <returns></returns>
-        public static bool ContainsCharacter(this string value, char invalidChar)
-        {
-            return value.Contains(invalidChar);
-        }
+        public static bool ContainsCharacter(this string value, char invalidChar) => value.Contains(invalidChar);
 
         /// <summary>
         /// Returns true if value contains invalidChar.
@@ -41,10 +35,7 @@ namespace lainlib
         /// <param name="value">This value</param>
         /// <param name="invalidChar">Character to find</param>
         /// <returns></returns>
-        public static bool ContainsCharacter(this string value, string invalidChar)
-        {
-            return value.Contains(invalidChar);
-        }
+        public static bool ContainsCharacter(this string value, string invalidChar) => value.Contains(invalidChar);
 
         /// <summary>
         /// Returns true if value contains any characters from invalidChars array.
@@ -55,12 +46,8 @@ namespace lainlib
         public static bool ContainsCharacters(this string value, char[] invalidChars)
         {
             for (int i = 0; i < invalidChars.Length; i++)
-            {
-                if (value.ContainsCharacter(invalidChars[i]) == true)
-                {
+                if (value.ContainsCharacter(invalidChars[i]) is true)
                     return true;
-                }
-            }
             return false;
         }
 
@@ -73,12 +60,8 @@ namespace lainlib
         public static bool ContainsCharacters(this string value, string[] invalidChars)
         {
             for (int i = 0; i < invalidChars.Length; i++)
-            {
-                if (value.ContainsCharacter(invalidChars[i]) == true)
-                {
+                if (value.ContainsCharacter(invalidChars[i]) is true)
                     return true;
-                }
-            }
             return false;
         }
 
@@ -86,10 +69,7 @@ namespace lainlib
         /// Returns a string containing DateTime information in dd-MMM-yyyyTHH-mm-ss.fff format.
         /// </summary>
         /// <returns></returns>
-        public static string GetDateTimeNow()
-        {
-            return DateTime.Now.ToString("dd'-'MMM'-'yyyy'T'HH'-'mm'-'ss.fff");
-        }
+        public static string GetDateTimeNow() => DateTime.Now.ToString("dd'-'MMM'-'yyyy'T'HH'-'mm'-'ss.fff");
 
         /// <summary>
         /// Returns a string object in "tmp(random number between 100 -> 2147483647)" format that is suitable for using with I/O tools and file naming. 
@@ -129,10 +109,7 @@ namespace lainlib
         /// <param name="wrapper">Character that is wrapping text</param>
         /// <param name="removeFrom">String to remove wrappers of</param>
         /// <returns></returns>
-        public static string RemoveWrappers(char wrapper, string removeFrom)
-        {
-            return removeFrom.Valid() && removeFrom.Contains(wrapper) ? removeFrom.Split(wrapper)[1] : removeFrom;
-        }
+        public static string RemoveWrappers(char wrapper, string removeFrom) => removeFrom.Valid() && removeFrom.Contains(wrapper) ? removeFrom.Split(wrapper)[1] : removeFrom;
 
         /// <summary>
         /// Removes character of string at given index (lowest index = 0). 
@@ -140,20 +117,14 @@ namespace lainlib
         /// <param name="value">String to remove character of</param>
         /// <param name="index">Index to remove</param>
         /// <returns></returns>
-        public static string RemoveAt(this string value, int index)
-        {
-            return Valid(value) && (index >= 0) && (index < value.Length) ? value.Remove(index, 1) : value;
-        }
+        public static string RemoveAt(this string value, int index) => Valid(value) && (index >= 0) && (index < value.Length) ? value.Remove(index, 1) : value;
 
         /// <summary>
         /// Removes last character of this string.
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        public static string RemoveLastCharacter(this string value)
-        {
-            return RemoveAt(value, value.Length - 1);
-        }
+        public static string RemoveLastCharacter(this string value) => RemoveAt(value, value.Length - 1);
 
         /// <summary>
         /// Removes last appearance of any string from a string.
@@ -161,22 +132,16 @@ namespace lainlib
         /// <param name="removeThis">String to remove appearance of</param>
         /// <param name="inHere">String to perform task on</param>
         /// <returns>Returns string.Empty if strings are not valid or inHere does not contain a string to remove.</returns>
-        public static string RemoveLastAppearance(string removeThis, string inHere)
-        {
-            return removeThis.Valid() && inHere.Valid() && inHere.Contains(removeThis)
+        public static string RemoveLastAppearance(string removeThis, string inHere) => removeThis.Valid() && inHere.Valid() && inHere.Contains(removeThis)
                 ? inHere.Remove(inHere.LastIndexOf(removeThis), removeThis.Length)
                 : string.Empty;
-        }
 
         /// <summary>
         /// Removes all of the spaces in supplied string and returns the new version. Returns null if input string was not valid.
         /// </summary>
         /// <param name="removeFrom">String to remove spaces of</param>
         /// <returns></returns>
-        public static string RemoveAllSpaces(this string removeFrom)
-        {
-            return removeFrom.Valid() && removeFrom.Contains(" ") ? removeFrom.Replace(" ", string.Empty) : null;
-        }
+        public static string RemoveAllSpaces(this string removeFrom) => removeFrom.Valid() && removeFrom.Contains(" ") ? removeFrom.Replace(" ", string.Empty) : null;
 
         /// <summary>
         /// Tokenizes given text by space. Anything wrapped in character '"' will be counted as a word and not be splitted. 
@@ -201,9 +166,7 @@ namespace lainlib
         {
             StringBuilder stringBuilder = new();
             for (int i = 0; i < arr.Length; i++)
-            {
                 stringBuilder.Append(arr[i]);
-            }
             return stringBuilder.ToString();
         }
 
@@ -216,9 +179,7 @@ namespace lainlib
         {
             StringBuilder stringBuilder = new();
             for (int i = 0; i < arr.Length; i++)
-            {
                 stringBuilder.Append(arr[i]);
-            }
             return stringBuilder.ToString();
         }
 
@@ -232,9 +193,7 @@ namespace lainlib
         {
             StringBuilder stringBuilder = new();
             for (int i = 0; i < arr.Length; i++)
-            {
                 stringBuilder.Append(arr[i] + delimiter);
-            }
             return stringBuilder.ToString().RemoveLastCharacter();
         }
 
@@ -248,9 +207,7 @@ namespace lainlib
         {
             StringBuilder stringBuilder = new();
             for (int i = 0; i < arr.Length; i++)
-            {
                 stringBuilder.Append(arr[i] + delimiter);
-            }
             return stringBuilder.ToString().RemoveLastCharacter();
         }
 
@@ -282,12 +239,8 @@ namespace lainlib
             {
                 int count = 0;
                 for (int i = 0; i < input.Length; i++)
-                {
                     if (input[i] == character)
-                    {
                         count++;
-                    }
-                }
                 return count;
             }
             return 0;

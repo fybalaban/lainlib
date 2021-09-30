@@ -1,5 +1,5 @@
 ﻿/*
- *         lainlib.IO
+ *         lainlib
  * 
  *         lainlib by fybalaban @ 2021
  *         https://www.github.com/fybalaban/lainlib
@@ -28,9 +28,7 @@ namespace lainlib
         public static bool ReadLinesFromFile(string fromFilePath, out IEnumerable<string> content, bool haltWhenErrorOccurs = false)
         {
             if (!fromFilePath.Valid())
-            {
                 throw new ArgumentNullException(nameof(fromFilePath));
-            }
 
             content = null;
             try
@@ -45,7 +43,7 @@ namespace lainlib
         }
 
         /// <summary>
-        /// Writes all elements in List object, treating them as lines. Suppresses errors. Not safe. 
+        /// Writes all elements in List object, treating them as lines. 
         /// </summary>
         /// <param name="writeTheseLines">List containing lines</param>
         /// <param name="toFilePath">Path of file to write</param>
@@ -54,17 +52,11 @@ namespace lainlib
         public static bool WriteLinesToFile(IEnumerable<string> writeTheseLines, string toFilePath, bool haltWhenErrorOccurs = false)
         {
             if (!toFilePath.Valid())
-            {
                 throw new ArgumentNullException(nameof(toFilePath));
-            }
             if (writeTheseLines is null)
-            {
                 throw new ArgumentNullException(nameof(writeTheseLines));
-            }
-            if (writeTheseLines.Count() == 0)
-            {
+            if (!writeTheseLines.Any())
                 throw new ArgumentOutOfRangeException(nameof(writeTheseLines));
-            }
 
             try
             {
@@ -82,24 +74,18 @@ namespace lainlib
         /// </summary>
         /// <param name="path">A valid file path</param>
         /// <returns></returns>
-        public static string ReturnDirectoryFromFullPath(string path)
-        {
-            return !File.Exists(path)
+        public static string ReturnDirectoryFromFullPath(string path) => !File.Exists(path)
                 ? throw new FileNotFoundException("Argument 'path' is not a valid file path.", nameof(path))
                 : new FileInfo(path).Directory.FullName + @"\";
-        }
 
         /// <summary>
         /// Returns only the name of file from its given full name path.
         /// </summary>
         /// <param name="path">A valid file path</param>
         /// <returns></returns>
-        public static string ReturnNameFromFullPath(string path)
-        {
-            return !File.Exists(path)
+        public static string ReturnNameFromFullPath(string path) => !File.Exists(path)
                 ? throw new FileNotFoundException("Argument 'path' is not a valid file path.", nameof(path))
                 : new FileInfo(path).Name;
-        }
 
         /// <summary>
         /// Creates a error log text out of an Exception object and saves it in the given directory. Safe.
@@ -110,9 +96,7 @@ namespace lainlib
         public static void CreateAndWriteErrorMessage(string saveDirectory, Exception exception, string applicationMessageLine = @"")
         {
             if (Directory.Exists(saveDirectory) == false)
-            {
                 Directory.CreateDirectory(saveDirectory);
-            }
             string errorLogPath = string.Format("error log({0}).txt", Text.GetDateTimeNow());
             string errorLogText = string.Format("{0}\r\nError occured at - {1}\r\n \r\nError message: {2}\r\nInner exception: {3}\r\n\r\nTarget site: {4}\r\n \r\nStack trace:\r\n{5}",
                 applicationMessageLine, DateTime.Now, exception.Message, exception.InnerException, exception.TargetSite, exception.StackTrace);
@@ -134,13 +118,11 @@ namespace lainlib
         /// <returns></returns>
         public static string LinesToString(IEnumerable<string> list)
         {
-            if (list.Count() != 0)
+            if (list.Any())
             {
                 StringBuilder builder = new();
                 for (int i = 0; i < list.Count(); i++)
-                {
                     builder.AppendFormat("{0}{1}", list.ElementAt(i), Environment.NewLine);
-                }
                 return builder.ToString();
             }
             return string.Empty;
@@ -154,9 +136,7 @@ namespace lainlib
         public static bool ReadBytesFromFile(string fromFilePath, out byte[] content)
         {
             if (!fromFilePath.Valid())
-            {
                 throw new ArgumentNullException(nameof(fromFilePath));
-            }
 
             content = null;
             try
@@ -179,17 +159,11 @@ namespace lainlib
         public static bool WriteBytesToFile(byte[] writeTheseBytes, string toFilePath)
         {
             if (!toFilePath.Valid())
-            {
                 throw new ArgumentNullException(nameof(toFilePath));
-            }
             if (writeTheseBytes is null)
-            {
                 throw new ArgumentNullException(nameof(writeTheseBytes));
-            }
             if (writeTheseBytes.Length == 0)
-            {
                 throw new ArgumentOutOfRangeException(nameof(writeTheseBytes));
-            }
 
             try
             {
@@ -200,6 +174,20 @@ namespace lainlib
                 return false;
             }
             return true;
+        }
+
+        /// <summary>
+        /// Adds \\ to end of path if it doesn't exist in the first place & if path is a valid directory path
+        /// </summary>
+        /// <param name="directoryPath">Valid path to a directory</param>
+        /// <returns>Returns the resulting path</returns>
+        public static string AddBackslashToDirectoryPath(string directoryPath)
+        {
+            return !directoryPath.Valid()
+                ? throw new ArgumentException($"{nameof(directoryPath)} is null, whitespace or empty")
+                : !Directory.Exists(directoryPath)
+                ? throw new DirectoryNotFoundException($"{directoryPath} not found")
+                : directoryPath.Last() != '\\' ? directoryPath + "\\" : directoryPath;
         }
     }
 }
