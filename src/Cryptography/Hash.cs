@@ -21,7 +21,7 @@ namespace lainlib.Cryptography
 
         public static string SHA512(string input) => string.IsNullOrWhiteSpace(input)
                 ? throw new ArgumentNullException(nameof(input))
-                : Encoding.UTF8.GetString(SHA512(Encoding.UTF8.GetBytes(input)));
+                : BitConverter.ToString(SHA512(Encoding.UTF8.GetBytes(input))).Replace("-", string.Empty).Replace("-", string.Empty);
 
         public static byte[] SHA384(byte[] input)
         {
@@ -36,7 +36,7 @@ namespace lainlib.Cryptography
 
         public static string SHA384(string input) => string.IsNullOrWhiteSpace(input)
                 ? throw new ArgumentNullException(nameof(input))
-                : Encoding.UTF8.GetString(SHA384(Encoding.UTF8.GetBytes(input)));
+                : BitConverter.ToString(SHA384(Encoding.UTF8.GetBytes(input))).Replace("-", string.Empty);
 
         public static byte[] SHA256(byte[] input)
         {
@@ -51,7 +51,7 @@ namespace lainlib.Cryptography
 
         public static string SHA256(string input) => string.IsNullOrWhiteSpace(input)
                 ? throw new ArgumentNullException(nameof(input))
-                : Encoding.UTF8.GetString(SHA256(Encoding.UTF8.GetBytes(input)));
+                : BitConverter.ToString(SHA256(Encoding.UTF8.GetBytes(input))).Replace("-", string.Empty);
 
         public static byte[] SHA128(byte[] input)
         {
@@ -66,7 +66,7 @@ namespace lainlib.Cryptography
 
         public static string SHA128(string input) => string.IsNullOrWhiteSpace(input)
                 ? throw new ArgumentNullException(nameof(input))
-                : Encoding.UTF8.GetString(SHA128(Encoding.UTF8.GetBytes(input)));
+                : BitConverter.ToString(SHA128(Encoding.UTF8.GetBytes(input))).Replace("-", string.Empty);
 
         public static byte[] MD5(byte[] input)
         {
@@ -81,7 +81,7 @@ namespace lainlib.Cryptography
 
         public static string MD5(string input) => string.IsNullOrWhiteSpace(input)
                 ? throw new ArgumentNullException(nameof(input))
-                : Encoding.UTF8.GetString(MD5(Encoding.UTF8.GetBytes(input)));
+                : BitConverter.ToString(MD5(Encoding.UTF8.GetBytes(input))).Replace("-", string.Empty);
 
         /// <summary>
         /// Performs the specified pseudorandom hash function on supplied input. Returns the hash value
