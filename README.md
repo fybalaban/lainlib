@@ -22,4 +22,4 @@ Ported from lainlib (.NET Framework 4.6) to .NET 5.0. Renamed the project to lai
 ## Contact me
 
 * [**Twitter**](https://www.twitter.com/feritdegil/ "My Twitter profile")
-* [**Email address**](mailto:fybalaban@gmail.com?subject=[GitHub]%20lainlib "Email me!")
+* [**Email address**](mailto:ferityigitbalaban@gmail.com?subject=[GitHub]%20lainlib "Email me!")
