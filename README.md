@@ -16,10 +16,10 @@ Current assembly file version: | 2.6.1
 Target Framework: | .NET 5.0
 
 ## Notes
-I developed this class library mainly for solving problems that I encountered while working on several different coding projects. I researched and tested for the most efficient algorithm.
+I developed this class library mainly for solving problems that I encountered while working on several different coding projects. I researched and tested for the most efficient algorithm. `lainlib` acts as a continuation of [LuddeToolset](https://github.com/fybx/LuddeToolset.git)
 Ported from lainlib (.NET Framework 4.6) to .NET 5.0. Renamed the project to lainlib. Removed ErrorHandler class and all methods that depended on ErrorHandler.
 
 ## Contact me
 
-* [**Twitter**](https://www.twitter.com/feritdegil/ "My Twitter profile")
-* [**Email address**](mailto:ferityigitbalaban@gmail.com?subject=[GitHub]%20lainlib "Email me!")
+* [**My website**](https://fybx.dev/ "My personal website")
+* [**Email address**](mailto:f@fybx.dev?subject=[GitHub]%20lainlib "Email me!")
